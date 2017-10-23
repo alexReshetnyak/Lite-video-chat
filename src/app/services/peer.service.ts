@@ -2,18 +2,23 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class PeerService {
-  peer;
+  peer:any;
 
   constructor() { }
+
+  getUserId(){
+    this.peer = new Peer({key: 'jis4suniffnd0a4i'});
+    return this.peer;
+  }
 
   createConnection(video){
     let id = localStorage.getItem('userId');
     let random = Math.random()*2;
-    if (random > 1) {
-      this.peer = new Peer('kok9s9blukdquxr', {key: 'jis4suniffnd0a4i'});
-    }else{
-      this.peer = new Peer("54k7fofbmxjkbj4i", {key: 'jis4suniffnd0a4i'});
-    }
+    // if (random > 1) {
+    //   this.peer = new Peer('kok9s9blukdquxr', {key: 'jis4suniffnd0a4i'});
+    // }else{
+    //   this.peer = new Peer("54k7fofbmxjkbj4i", {key: 'jis4suniffnd0a4i'});
+    // }
     //this.peer = new Peer({key: 'jis4suniffnd0a4i'});
 
     // if (!!(id)){
@@ -63,14 +68,14 @@ export class PeerService {
     });
   }
 
-  videoconnect(video, localvar, fname){
+  videoconnect(video, peer, anotherid){
     
     let n = <any>navigator;
     
     n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia  || n.msGetUserMedia );
     
     n.getUserMedia({video: true, audio: true}, function(stream) {
-      var call = localvar.call(fname, stream);
+      var call = peer.call(anotherid, stream);
       call.on('stream', function(remotestream) {
         video.src = URL.createObjectURL(remotestream);
         video.play();

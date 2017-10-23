@@ -1,0 +1,53 @@
+<div class="container-for-form" [ngStyle]="{'height': windowHeight}">
+  <div class="row">
+      <div class="signup-form-wrap">
+        <h1 class="text-center signup-title">Sign up to continue</h1>
+        <div class="account-wall">
+          <form class="form-signup" (ngSubmit)='getUserId()' #signupForm = 'ngForm'>
+            <input  type="text"
+                    class="form-control" 
+                    placeholder="Username"
+                    minlength="4" 
+                    required
+                    name = 'userName'
+                    #userName = 'ngModel'
+                    [(ngModel)] = 'model.userName'
+                    autofocus>
+            <div [hidden]='userName.valid || userName.pristine' class="error-message">
+                Password is required
+            </div>
+            <input  type="password"
+                    class="form-control" 
+                    placeholder="Password" 
+                    minlength="6" 
+                    required
+                    name = 'userPassword'
+                    #userPassword = 'ngModel'
+                    [(ngModel)] = 'model.userPassword' 
+                    required>
+            <div [hidden]='userPassword.valid || userPassword.pristine' class="error-message">
+              Password is required
+            </div>
+            <input  type="password"
+                    class="form-control" 
+                    placeholder="Confirm password" 
+                    minlength="6" 
+                    required
+                    (keyup)='checkPasswordsMatch()'
+                    name = 'confirmPassword'
+                    #confirmPassword = 'ngModel'
+                    [(ngModel)] = 'model.confirmPassword' 
+                    required>
+            <div [hidden] = 'confirmPasswordValid' class="error-message error-message-confirm-password">
+                Passwords do not match
+            </div>
+            <button class="btn btn-lg btn-primary btn-block button-submit"
+                    [disabled]='signupForm.form.invalid || !confirmPasswordValid' 
+                    type="submit">
+              Sign up
+            </button>
+            </form>
+        </div>  
+      </div>
+    </div>
+</div>
