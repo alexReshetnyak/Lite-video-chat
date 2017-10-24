@@ -8,9 +8,11 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { ChatComponent } from './chat/chat.component';
+import { FriendsComponent } from './chat/friends/friends.component';
 
 import { PeerService } from './services/peer.service';
 import { ApiService } from './services/api.service';
+import { UserService } from './services/user.service';
 import { AuthGuard } from './guards/auth-guard.service';
 
 @NgModule({
@@ -18,7 +20,8 @@ import { AuthGuard } from './guards/auth-guard.service';
     AppComponent,
     LoginComponent,
     SignupComponent,
-    ChatComponent
+    ChatComponent,
+    FriendsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,6 +32,7 @@ import { AuthGuard } from './guards/auth-guard.service';
   providers: [ PeerService,
                ApiService,
                AuthGuard,
+               UserService
    ],
   bootstrap: [AppComponent]
 })

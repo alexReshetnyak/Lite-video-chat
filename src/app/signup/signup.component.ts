@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { SignUpForm } from '../models/forms.models';
 import { Observable } from 'rxjs/Observable';
@@ -17,14 +18,19 @@ export class SignupComponent implements OnInit {
   @ViewChild('userName') userNameInput: ElementRef;
   windowHeight: string;
   model:SignUpForm;
+  userNameValid:boolean = true;
+  userNameExist: boolean = false;
   confirmPasswordValid: boolean = true;
 
-  constructor(public apiService: ApiService, public peerService: PeerService) {}
+  constructor( public apiService: ApiService,
+               public peerService: PeerService,
+               public router: Router
+              ){}
 
   ngOnInit(){
     this.model = new SignUpForm('', '', '');
     this.windowHeight = `${window.innerHeight}px`;
-    //this.checkLogin();
+    this.checkLogin();
   }
 
   checkPasswordsMatch(){
@@ -36,11 +42,29 @@ export class SignupComponent implements OnInit {
   }
 
   checkLogin(){
+
     Observable.fromEvent(this.userNameInput.nativeElement, 'keyup')
       .map( (event:any) => event.target.value)
+      .filter((text) => text.length > 1)
       .debounceTime(300)
-      .switchMap(userName => this.apiService.getUserByName(userName))
-      .subscribe(res => {});
+      .switchMap(name => this.apiService.getUserByName(name))
+      .subscribe(res => {
+        this.setUserNameStatus();
+        console.log(res);
+        if (res.length > 0) {
+          this.userNameExist = true;
+        }else{
+          this.userNameExist = false;
+        }
+      });
+  }
+
+  setUserNameStatus(){
+    if(this.signupForm.controls.userName.pristine || this.signupForm.controls.userName.valid){
+      this.userNameValid = true;
+    }else{
+      this.userNameValid = false;
+    }
   }
 
   getUserId(){
@@ -60,8 +84,12 @@ export class SignupComponent implements OnInit {
                       password: this.model.userPassword,
                       user_friends: ""
                       };
-    this.apiService.createUser(user).subscribe(data => {
-      console.log(data);
+    this.apiService.createUser(user).subscribe((data:any) => {
+      if (data.status = "OK") {
+        this.router.navigate(['/chat']);
+      }else{
+        console.log('Error on server');
+      }
     });
   }
 }

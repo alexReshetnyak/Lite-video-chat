@@ -25,14 +25,46 @@
       },
 
       getUserByName: function (req, res) {
-          console.log(req.query);
-          UserModel.find({ first_name: new RegExp(req.query.name, 'i')})
+
+          UserModel.find({ name: req.params.name})
           .exec(function (err, user) {
             if (!err) {
                 return res.send(user);
             } else {
                 handleError(res, err); 
             }
+        });
+      },
+
+      authenticateUser: function (req, res) {
+        UserModel.find({ name: req.body.name})
+        .exec(function (err, user) {
+          if (!err) {
+              if(user.length > 0 && user[0].password  === req.body.password){
+                return res.send(user);
+              }else{
+                return res.send([]);
+              }
+          } else {
+              handleError(res, err); 
+          }
+        });
+      },
+
+      getUserFriendByName(req, res) {
+        UserModel.find({ name: req.params.name})
+        .exec(function (err, user) {
+          console.log(user);
+          if (!err) {
+              if(user.length > 0){
+                var friend = [{name: user[0].name, user_id: user[0].user_id}];
+                return res.send(friend);
+              }else{
+                return res.send([]);
+              }
+          } else {
+              handleError(res, err); 
+          }
         });
       },
 
@@ -81,32 +113,39 @@
                 } else {
                     handleError(res, err); 
                 }
-        })
-
+            })
       },
 
-      // Альтернативный способ обновлять пользователя
-      // можете не использовать
-      updateUser: function(req, res) {
-        UserModel.findById(req.params.db_id, function (err, user) {
-            if (!err) {
+      updateUserUseId: function (req, res) {
+        console.log(req.body);
+        UserModel.findByIdAndUpdate(req.params.db_id, {
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                avatar: req.body.avatar,
+            }, 
+            function(err, user) {
+                if (!err) {
+                    res.send(user);
+                } else {
+                    handleError(res, err); 
+                }
+            })
+      },
 
-                console.log('udateUser');
-                user.first_name = req.body.first_name;
-                user.last_name =  req.body.last_name;
-                user.avatar = req.body.avatar;
-                user.save(function (err) {
-                    if (!err) {
-                        res.send({ status: 'OK', user: user });
-                    } else {
-                        handleError(res, err); 
-                    }
-                });
+      updateUserByName: function(req, res) {
 
-            } else {
-               handleError(res, err); 
-            }
-        });
+        UserModel.findOneAndUpdate(
+                {name: req.params.name },
+                { "$set": { "name": req.body.name, "user_friends": req.body.user_friends}}
+            )
+            .exec(function(err, user){
+                console.log(user);
+                if (!err) {
+                    res.send(user);
+                } else {
+                    handleError(res, err); 
+                }
+         });
       },
 
       deleteUser: function (req, res) {

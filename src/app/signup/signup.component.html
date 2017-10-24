@@ -5,16 +5,20 @@
         <div class="account-wall">
           <form class="form-signup" (ngSubmit)='getUserId()' #signupForm = 'ngForm'>
             <input  type="text"
-                    class="form-control" 
+                    class="form-control user-name-input" 
                     placeholder="Username"
                     minlength="4" 
                     required
                     name = 'userName'
-                    #userName = 'ngModel'
+                    #userName
                     [(ngModel)] = 'model.userName'
                     autofocus>
-            <div [hidden]='userName.valid || userName.pristine' class="error-message">
-                Password is required
+            <div  [hidden]='userNameValid'
+                  class="error-message">
+                Name is required
+            </div>
+            <div  [hidden]='!userNameExist' class="error-message">
+                Name is already exist
             </div>
             <input  type="password"
                     class="form-control" 
@@ -42,7 +46,7 @@
                 Passwords do not match
             </div>
             <button class="btn btn-lg btn-primary btn-block button-submit"
-                    [disabled]='signupForm.form.invalid || !confirmPasswordValid' 
+                    [disabled]='signupForm.form.invalid || !confirmPasswordValid || userNameExist' 
                     type="submit">
               Sign up
             </button>

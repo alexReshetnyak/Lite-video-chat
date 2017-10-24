@@ -1,3 +1,43 @@
-<p>
-  login works!
-</p>
+<div class="container-for-form" [ngStyle]="{'height': windowHeight}">
+  <div class="row">
+      <div class="login-form-wrap">
+        <h1 class="text-center login-title">Login to continue</h1>
+        <div class="account-wall">
+          <form class="form-login" (ngSubmit)='loggingIn()' #loginForm = 'ngForm'>
+            <input  type="text"
+                    class="form-control user-name-input" 
+                    placeholder="Username"
+                    minlength="4" 
+                    required
+                    name = 'userName'
+                    #userName = 'ngModel'
+                    [(ngModel)] = 'model.userName'
+                    autofocus>
+            <div  [hidden]='userName.valid || userName.pristine' class="error-message">
+                Name is required
+            </div>
+            <input  type="password"
+                    class="form-control" 
+                    placeholder="Password" 
+                    minlength="6" 
+                    required
+                    name = 'userPassword'
+                    #userPassword = 'ngModel'
+                    [(ngModel)] = 'model.userPassword' 
+                    required>
+            <div [hidden]='userPassword.valid || userPassword.pristine' class="error-message">
+              Password is required
+            </div>
+            <div  [hidden]='!wrongNameOrPassword' class="error-message">
+              wrong name or password
+            </div>
+            <button class="btn btn-lg btn-primary btn-block button-submit"
+                    [disabled]='loginForm.form.invalid' 
+                    type="submit">
+              Login
+            </button>
+            </form>
+        </div>  
+      </div>
+    </div>
+</div>

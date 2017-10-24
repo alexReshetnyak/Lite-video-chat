@@ -1,0 +1,18 @@
+<div class="friends-conteiner">
+  <input type="text" [(ngModel)]="friend">
+  <button class="btn btn-default" (click)='addNewFriend()'>
+    Add friend
+  </button>
+
+  <div class="friend-not-found" [hidden]='friendExist'>Friend not found</div>
+  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>
+
+  <div class="friends-list">
+    <div class="friend-wrap">
+      <div *ngFor="let friend of userFriends">
+        {{friend.name}}
+      </div>
+    </div>
+  </div>
+
+</div>

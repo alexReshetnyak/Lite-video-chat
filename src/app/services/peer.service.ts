@@ -1,40 +1,29 @@
 import { Injectable } from '@angular/core';
+import { UserService } from './user.service';
 
 @Injectable()
 export class PeerService {
   peer:any;
+  peerKey: object = {key: 'jis4suniffnd0a4i'};
 
-  constructor() { }
+  constructor(public userService:UserService) { }
 
   getUserId(){
-    this.peer = new Peer({key: 'jis4suniffnd0a4i'});
+    this.peer = new Peer(this.peerKey);
     return this.peer;
   }
 
-  createConnection(video){
-    let id = localStorage.getItem('userId');
-    let random = Math.random()*2;
-    // if (random > 1) {
-    //   this.peer = new Peer('kok9s9blukdquxr', {key: 'jis4suniffnd0a4i'});
-    // }else{
-    //   this.peer = new Peer("54k7fofbmxjkbj4i", {key: 'jis4suniffnd0a4i'});
-    // }
-    //this.peer = new Peer({key: 'jis4suniffnd0a4i'});
+  getPeer(){
+    if (this.peer && this.peer.id && this.peer.id.length === 16){
+      return this.peer;
+    }else{
+      let user = this.userService.getCurrentUser();
+      this.peer = new Peer(user.user_id, this.peerKey);
+      return this.peer;
+    }
+  }
 
-    // if (!!(id)){
-    //   this.peer = new Peer(id, {key: 'jis4suniffnd0a4i'});
-    //   console.log(1);
-    // }else{
-    //   this.peer = new Peer({key: 'jis4suniffnd0a4i'});
-    //   setTimeout(() => {
-    //     console.log(this.peer.id);
-    //     localStorage.setItem('userId', this.peer.id);
-    //     console.log(2);
-    //   }, 2000);
-    // }
-    // setTimeout(() => {
-    //   this.mypeerid = this.peer.id;
-    // },2000);
+  monitorConnection(video){
     
     this.peer.on('connection', function(conn) {
       conn.on('data', function(data){
@@ -57,8 +46,6 @@ export class PeerService {
         console.log('Failed to get stream', err);
       });
     });
-
-    return this.peer;
   }
 
   connect(anotherid){
