@@ -17,6 +17,9 @@ export class ChatComponent implements OnInit {
   peer: any;
   anotherId: string;
   user:User;
+  videoChatStatus: boolean = false;
+  friend:{name, user_id};
+  friendSelected:boolean = false;
   
   
   constructor(  public peerService: PeerService,
@@ -25,32 +28,33 @@ export class ChatComponent implements OnInit {
               ){}
   
   ngOnInit() {
+    this.friend = {name: "", user_id: ""};
     this.video = this.myVideo.nativeElement;
     this.peer = this.peerService.getPeer();
     this.user = this.userService.getCurrentUser();
-
-    // let interval$ = Observable.interval(50);
-    // let subscription = interval$.subscribe(step => {
-    //   if(this.peer.id != undefined){
-    //     subscription.unsubscribe();
-    //     this.peerId = this.peer.id;
-    //     console.log(this.peerId);
-    //   }
-    // });
-
     this.peerService.monitorConnection(this.video);
+  }
+
+  callFriend(friendId){
+    this.videoChatStatus = true;
+    this.peerService.videoconnect(this.video, this.peer, friendId);
+  }
+  selectFriend(friend){
+    this.friend = friend;
+    this.friendSelected = true;
   }
   
   connect(){
     this.peerService.connect(this.anotherId);
-  }
-  
-  videoconnect(){
-    this.peerService.videoconnect(this.video, this.peer, this.anotherId);
-  }
+  } 
 
   logout(){
     this.userService.logout();
     this.router.navigate(['/login']);
+  }
+
+  closeCall(){
+    this.peerService.closeCall();
+    this.videoChatStatus = false;
   }
 }

@@ -1,18 +1,25 @@
 <div class="friends-conteiner">
-  <input type="text" [(ngModel)]="friend">
-  <button class="btn btn-default" (click)='addNewFriend()'>
-    Add friend
-  </button>
+  <div class="add-friend-wrap">
+      <input type="text"
+      [(ngModel)]="friend"
+      placeholder="Enter your friend name" 
+      class="form-control add-friend-input">
+      <button class="btn btn-default" (click)='addNewFriend()'>
+        Add friend
+      </button>
+  </div>
+  
 
   <div class="friend-not-found" [hidden]='friendExist'>Friend not found</div>
   <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>
+  <div [hidden]='!friendAlreadyInList'>You already add this user</div>
 
   <div class="friends-list">
     <div class="friend-wrap">
-      <div *ngFor="let friend of userFriends">
+      <div *ngFor="let friend of userFriends" class="friend" (click)='selectFriend(friend)'>
         {{friend.name}}
+        <div class="friend-call" (click)='callToFriend(friend)'>Call</div>
       </div>
     </div>
   </div>
-
 </div>

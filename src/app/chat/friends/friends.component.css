@@ -1,0 +1,32 @@
+.add-friend-wrap{
+    margin-bottom: 20px;
+}
+
+.add-friend-input{
+    margin-bottom: 10px;
+}
+
+
+.friend-wrap{
+    border: 1px solid #CFCFCF;
+}
+.friend{
+    cursor: pointer;
+    color: #9E9E9E;
+    border-bottom: 1px solid #CFCFCF;
+    font-size: 16px;
+    padding: 5px 0px 5px 10px;
+}
+
+.friend:last-child{
+    border: none;
+}
+
+.friend:hover{
+    box-shadow: 0px 0px 3px 0px #CFCFCF inset;
+}
+
+.friend-call{
+    float: right;
+    padding-right: 5px;
+}

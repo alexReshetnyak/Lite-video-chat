@@ -1,17 +1,34 @@
 <div>
-    <div class="chat-header">
-        <h1>My id {{peer.id}} </h1>
-        <span> {{user.name}} </span><a (click)='logout()'> Logout</a>
+    <div class="chat-header text-right">
+        <span class='user-name'> {{user.name}} </span>
+        <a (click)='logout()' class="logout-link"> Logout</a>
     </div>
 
     <div class="chat-container">
-        <div class="friends">
-            <app-friends [user] = 'user'></app-friends>
-        </div>    
-        <input type="text" [(ngModel)]="anotherId">
-        <button (click)="connect()">Connect</button>
-        <button (click)="videoconnect()">VideoChat</button>
-        <video #myvideo></video>
+        <div class="friends col-md-3 col-xs-12" >
+            <app-friends [user] = 'user'
+                         (selectUserFriend) = 'selectFriend($event)'
+                         (callFriend)='callFriend($event)'>
+            </app-friends>
+            <div>
+                <button (click)="closeCall()" 
+                        class="btn btn-default close-call-button">
+                        CloseCall
+                </button>
+            </div>
+            
+            <div [hidden] = '!friendSelected'>Send message to {{friend.name}}</div>
+            <input  type="text" 
+                    [(ngModel)]="anotherId" 
+                    placeholder="AnotherId" 
+                    class="form-control">
+            <button (click)="connect()" class="btn btn-default send-button">Send</button>
+        </div>
+        <div class="col-md-9 col-xs-12 text-right">
+            <div class="video-wrap">
+                <video #myvideo></video>
+            </div>
+        </div>
     </div>
 </div>
 

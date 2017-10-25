@@ -50,7 +50,6 @@ export class SignupComponent implements OnInit {
       .switchMap(name => this.apiService.getUserByName(name))
       .subscribe(res => {
         this.setUserNameStatus();
-        console.log(res);
         if (res.length > 0) {
           this.userNameExist = true;
         }else{
@@ -84,8 +83,9 @@ export class SignupComponent implements OnInit {
                       password: this.model.userPassword,
                       user_friends: ""
                       };
-    this.apiService.createUser(user).subscribe((data:any) => {
-      if (data.status = "OK") {
+    this.apiService.createUser(user).subscribe((userDb:any) => {
+
+      if (userDb.length > 0) {
         this.router.navigate(['/chat']);
       }else{
         console.log('Error on server');

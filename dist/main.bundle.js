@@ -222,7 +222,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".friends{\n    width: 350px;\n    border: 1px solid red;\n}", ""]);
+exports.push([module.i, ".chat-header{\n    line-height: 40px;\n}\n\n.user-name{\n    font-size: 20px;\n    color: #9E9E9E;\n}\n\n.logout-link{\n    padding-right: 15px;\n    cursor: pointer; \n}\n\n.friends{\n    box-shadow: 0 0 5px 0 #999999;\n    padding: 20px 10px;\n}\n\n.close-call-button{\n    margin: 20px 0;\n}\n.send-button{\n    margin-top: 20px;\n}\n\n.video-wrap{\n    display: inline-block;\n    border: 1px solid #999999;\n    box-shadow: 0 0 5px 0 #999999;\n    height: 480px;\n    width: 640px;\n    background: black;\n}", ""]);
 
 // exports
 
@@ -235,7 +235,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/chat.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n    <div class=\"chat-header\">\n        <h1>My id {{peer.id}} </h1>\n        <span> {{user.name}} </span><a (click)='logout()'> Logout</a>\n    </div>\n\n    <div class=\"chat-container\">\n        <div class=\"friends\">\n            <app-friends [user] = 'user'></app-friends>\n        </div>    \n        <input type=\"text\" [(ngModel)]=\"anotherId\">\n        <button (click)=\"connect()\">Connect</button>\n        <button (click)=\"videoconnect()\">VideoChat</button>\n        <video #myvideo></video>\n    </div>\n</div>\n\n"
+module.exports = "<div>\n    <div class=\"chat-header text-right\">\n        <span class='user-name'> {{user.name}} </span>\n        <a (click)='logout()' class=\"logout-link\"> Logout</a>\n    </div>\n\n    <div class=\"chat-container\">\n        <div class=\"friends col-md-3 col-xs-12\" >\n            <app-friends [user] = 'user'\n                         (selectUserFriend) = 'selectFriend($event)'\n                         (callFriend)='callFriend($event)'>\n            </app-friends>\n            <div>\n                <button (click)=\"closeCall()\" \n                        class=\"btn btn-default close-call-button\">\n                        CloseCall\n                </button>\n            </div>\n            \n            <div [hidden] = '!friendSelected'>Send message to {{friend.name}}</div>\n            <input  type=\"text\" \n                    [(ngModel)]=\"anotherId\" \n                    placeholder=\"AnotherId\" \n                    class=\"form-control\">\n            <button (click)=\"connect()\" class=\"btn btn-default send-button\">Send</button>\n        </div>\n        <div class=\"col-md-9 col-xs-12 text-right\">\n            <div class=\"video-wrap\">\n                <video #myvideo></video>\n            </div>\n        </div>\n    </div>\n</div>\n\n"
 
 /***/ }),
 
@@ -266,30 +266,34 @@ var ChatComponent = (function () {
         this.peerService = peerService;
         this.userService = userService;
         this.router = router;
+        this.videoChatStatus = false;
+        this.friendSelected = false;
     }
     ChatComponent.prototype.ngOnInit = function () {
+        this.friend = { name: "", user_id: "" };
         this.video = this.myVideo.nativeElement;
         this.peer = this.peerService.getPeer();
         this.user = this.userService.getCurrentUser();
-        // let interval$ = Observable.interval(50);
-        // let subscription = interval$.subscribe(step => {
-        //   if(this.peer.id != undefined){
-        //     subscription.unsubscribe();
-        //     this.peerId = this.peer.id;
-        //     console.log(this.peerId);
-        //   }
-        // });
         this.peerService.monitorConnection(this.video);
+    };
+    ChatComponent.prototype.callFriend = function (friendId) {
+        this.videoChatStatus = true;
+        this.peerService.videoconnect(this.video, this.peer, friendId);
+    };
+    ChatComponent.prototype.selectFriend = function (friend) {
+        this.friend = friend;
+        this.friendSelected = true;
     };
     ChatComponent.prototype.connect = function () {
         this.peerService.connect(this.anotherId);
     };
-    ChatComponent.prototype.videoconnect = function () {
-        this.peerService.videoconnect(this.video, this.peer, this.anotherId);
-    };
     ChatComponent.prototype.logout = function () {
         this.userService.logout();
         this.router.navigate(['/login']);
+    };
+    ChatComponent.prototype.closeCall = function () {
+        this.peerService.closeCall();
+        this.videoChatStatus = false;
     };
     return ChatComponent;
 }());
@@ -319,7 +323,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".add-friend-wrap{\n    margin-bottom: 20px;\n}\n\n.add-friend-input{\n    margin-bottom: 10px;\n}\n\n\n.friend-wrap{\n    border: 1px solid #CFCFCF;\n}\n.friend{\n    cursor: pointer;\n    color: #9E9E9E;\n    border-bottom: 1px solid #CFCFCF;\n    font-size: 16px;\n    padding: 5px 0px 5px 10px;\n}\n\n.friend:last-child{\n    border: none;\n}\n\n.friend:hover{\n    box-shadow: 0px 0px 3px 0px #CFCFCF inset;\n}\n\n.friend-call{\n    float: right;\n    padding-right: 5px;\n}", ""]);
 
 // exports
 
@@ -332,7 +336,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/friends/friends.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"friends-conteiner\">\n  <input type=\"text\" [(ngModel)]=\"friend\">\n  <button class=\"btn btn-default\" (click)='addNewFriend()'>\n    Add friend\n  </button>\n\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\n\n  <div class=\"friends-list\">\n    <div class=\"friend-wrap\">\n      <div *ngFor=\"let friend of userFriends\">\n        {{friend.name}}\n      </div>\n    </div>\n  </div>\n\n</div>"
+module.exports = "<div class=\"friends-conteiner\">\n  <div class=\"add-friend-wrap\">\n      <input type=\"text\"\n      [(ngModel)]=\"friend\"\n      placeholder=\"Enter your friend name\" \n      class=\"form-control add-friend-input\">\n      <button class=\"btn btn-default\" (click)='addNewFriend()'>\n        Add friend\n      </button>\n  </div>\n  \n\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\n  <div [hidden]='!friendAlreadyInList'>You already add this user</div>\n\n  <div class=\"friends-list\">\n    <div class=\"friend-wrap\">\n      <div *ngFor=\"let friend of userFriends\" class=\"friend\" (click)='selectFriend(friend)'>\n        {{friend.name}}\n        <div class=\"friend-call\" (click)='callToFriend(friend)'>Call</div>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -369,40 +373,58 @@ var FriendsComponent = (function () {
         this.router = router;
         this.apiService = apiService;
         this.userService = userService;
+        this.callFriend = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
+        this.selectUserFriend = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
         this.friend = "";
         this.yourNameError = false;
         this.friendExist = true;
+        this.friendAlreadyInList = false;
         this.userFriends = [];
     }
     FriendsComponent.prototype.ngOnInit = function () {
-        console.log(this.user);
         this.getUserFriends();
     };
     FriendsComponent.prototype.addNewFriend = function () {
         var _this = this;
         this.yourNameError = false;
         this.friendExist = true;
-        if (this.friend !== this.user.name) {
-            this.apiService.getFriend(this.friend)
-                .subscribe(function (friend) {
-                if (friend.length > 0) {
-                    _this.userService.saveFriend(friend);
-                    _this.user = _this.userService.getCurrentUser();
-                    _this.updateUserInDb();
-                    _this.getUserFriends();
-                }
-                else {
-                    _this.friendExist = false;
-                }
-            });
+        this.friendAlreadyInList = false;
+        if (this.friend === this.user.name) {
+            this.yourNameError = true;
+        }
+        else if (this.checkForFriendInList(this.friend)) {
+            this.friendAlreadyInList = true;
         }
         else {
-            this.yourNameError = true;
+            this.apiService.getFriend(this.friend)
+                .subscribe(function (friend) {
+                _this.saveFriend(friend);
+            });
+        }
+    };
+    FriendsComponent.prototype.checkForFriendInList = function (friend) {
+        var exist = false;
+        this.userFriends.forEach(function (userFriend) {
+            if (userFriend.name === friend) {
+                exist = true;
+            }
+        });
+        return exist;
+    };
+    FriendsComponent.prototype.saveFriend = function (friend) {
+        if (friend.length > 0) {
+            this.userService.saveFriend(friend);
+            this.user = this.userService.getCurrentUser();
+            this.updateUserInDb();
+            this.getUserFriends();
+        }
+        else {
+            this.friendExist = false;
         }
     };
     FriendsComponent.prototype.updateUserInDb = function () {
         this.apiService.updateUser(this.user)
-            .subscribe(function (res) { return console.log(res); });
+            .subscribe(function (res) { });
     };
     FriendsComponent.prototype.getUserFriends = function () {
         if (this.user.user_friends && this.user.user_friends.length > 0) {
@@ -412,12 +434,26 @@ var FriendsComponent = (function () {
             this.userFriends = [];
         }
     };
+    FriendsComponent.prototype.selectFriend = function (friend) {
+        this.selectUserFriend.emit(friend);
+    };
+    FriendsComponent.prototype.callToFriend = function (friend) {
+        this.callFriend.emit(friend.user_id);
+    };
     return FriendsComponent;
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_5__models_user_model__["User"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__models_user_model__["User"]) === "function" && _a || Object)
 ], FriendsComponent.prototype, "user", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["T" /* Output */])(),
+    __metadata("design:type", Object)
+], FriendsComponent.prototype, "callFriend", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["T" /* Output */])(),
+    __metadata("design:type", Object)
+], FriendsComponent.prototype, "selectUserFriend", void 0);
 FriendsComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-friends',
@@ -503,7 +539,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/login/login.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\n  <div class=\"row\">\n      <div class=\"login-form-wrap\">\n        <h1 class=\"text-center login-title\">Login to continue</h1>\n        <div class=\"account-wall\">\n          <form class=\"form-login\" (ngSubmit)='loggingIn()' #loginForm = 'ngForm'>\n            <input  type=\"text\"\n                    class=\"form-control user-name-input\" \n                    placeholder=\"Username\"\n                    minlength=\"4\" \n                    required\n                    name = 'userName'\n                    #userName = 'ngModel'\n                    [(ngModel)] = 'model.userName'\n                    autofocus>\n            <div  [hidden]='userName.valid || userName.pristine' class=\"error-message\">\n                Name is required\n            </div>\n            <input  type=\"password\"\n                    class=\"form-control\" \n                    placeholder=\"Password\" \n                    minlength=\"6\" \n                    required\n                    name = 'userPassword'\n                    #userPassword = 'ngModel'\n                    [(ngModel)] = 'model.userPassword' \n                    required>\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\n              Password is required\n            </div>\n            <div  [hidden]='!wrongNameOrPassword' class=\"error-message\">\n              wrong name or password\n            </div>\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\n                    [disabled]='loginForm.form.invalid' \n                    type=\"submit\">\n              Login\n            </button>\n            </form>\n        </div>  \n      </div>\n    </div>\n</div>"
+module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\n  <div class=\"row\">\n      <div class=\"login-form-wrap\">\n        <h1 class=\"text-center login-title\">Login to continue</h1>\n        <div class=\"account-wall\">\n          <form class=\"form-login\" (ngSubmit)='loggingIn()' #loginForm = 'ngForm'>\n            <input  type=\"text\"\n                    class=\"form-control user-name-input\" \n                    placeholder=\"Username\"\n                    minlength=\"4\" \n                    required\n                    name = 'userName'\n                    #userName = 'ngModel'\n                    [(ngModel)] = 'model.userName'\n                    autofocus>\n            <div  [hidden]='userName.valid || userName.pristine' class=\"error-message\">\n                Name is required\n            </div>\n            <input  type=\"password\"\n                    class=\"form-control\" \n                    placeholder=\"Password\" \n                    minlength=\"6\" \n                    required\n                    name = 'userPassword'\n                    #userPassword = 'ngModel'\n                    [(ngModel)] = 'model.userPassword' \n                    required>\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\n              Password is required\n            </div>\n            <div  [hidden]='!wrongNameOrPassword' class=\"error-message\">\n              wrong name or password\n            </div>\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\n                    [disabled]='loginForm.form.invalid' \n                    type=\"submit\">\n              Login\n            </button>\n            </form>\n        </div>\n        <div class=\"text-center\">\n          <a [routerLink]=\"'/signup'\">Do not have account yet?</a>\n        </div> \n      </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -550,8 +586,8 @@ var LoginComponent = (function () {
     LoginComponent.prototype.chekNameAndPassordMatch = function () {
         var _this = this;
         this.apiService.login(this.model.userName, this.model.userPassword)
-            .subscribe(function (res) {
-            if (res.length > 0) {
+            .subscribe(function (user) {
+            if (user.length > 0) {
                 _this.wrongNameOrPassword = false;
                 _this.router.navigate(['/chat']);
             }
@@ -646,13 +682,13 @@ var ApiService = (function () {
     ApiService.prototype.createUser = function (user) {
         var _this = this;
         return this.http.post(this.userUrl, user)
-            .map(function (res) { return res.json(); })
-            .do(function (res) { return _this.userService.saveUserLocally(res); })
+            .map(function (user) { return user.json(); })
+            .do(function (user) { return _this.userService.saveUserLocally(user); })
             .catch(this.handleError);
     };
     ApiService.prototype.getUserByName = function (name) {
         return this.http.get(this.userUrl + "/name/" + name)
-            .map(function (res) { return res.json(); })
+            .map(function (user) { return user.json(); })
             .catch(this.handleError);
     };
     ApiService.prototype.getFriend = function (friend) {
@@ -663,22 +699,11 @@ var ApiService = (function () {
     ApiService.prototype.login = function (name, password) {
         var _this = this;
         return this.http.post(this.userUrl + "/login", { name: name, password: password })
-            .map(function (res) { return res.json(); })
-            .do(function (res) {
-            if (res.length > 0) {
-                console.log(res);
-                _this.userService.setIsloggedIn(true);
-                var user = _this.userService.dataToUser(res[0]);
-                _this.userService.setCurrentUser(user);
-            }
-            else {
-                _this.userService.setIsloggedIn(false);
-            }
-        })
+            .map(function (user) { return user.json(); })
+            .do(function (user) { return _this.userService.saveUserLocally(user); })
             .catch(this.handleError);
     };
     ApiService.prototype.updateUser = function (user) {
-        console.log(user);
         return this.http.put(this.userUrl + "/" + user.name, user)
             .map(function (res) { return res.json(); });
     };
@@ -744,15 +769,16 @@ var PeerService = (function () {
         }
     };
     PeerService.prototype.monitorConnection = function (video) {
-        this.peer.on('connection', function (conn) {
-            conn.on('data', function (data) {
+        var _this = this;
+        this.peer.on('connection', function (connection) {
+            connection.on('data', function (data) {
                 console.log(data);
             });
         });
-        var n = navigator;
-        n.getUserMedia = (n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia);
+        var navigateObject = this.getNavigateObject();
         this.peer.on('call', function (call) {
-            n.getUserMedia({ video: true, audio: true }, function (stream) {
+            _this.call = call;
+            navigateObject.getUserMedia({ video: true, audio: true }, function (stream) {
                 call.answer(stream);
                 call.on('stream', function (remotestream) {
                     video.src = URL.createObjectURL(remotestream);
@@ -764,23 +790,35 @@ var PeerService = (function () {
         });
     };
     PeerService.prototype.connect = function (anotherid) {
-        var conn = this.peer.connect(anotherid);
-        conn.on('open', function () {
-            conn.send('Message from that id');
+        var connect = this.peer.connect(anotherid);
+        connect.on('open', function () {
+            connect.send('Message from that id');
         });
     };
     PeerService.prototype.videoconnect = function (video, peer, anotherid) {
-        var n = navigator;
-        n.getUserMedia = (n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia);
-        n.getUserMedia({ video: true, audio: true }, function (stream) {
+        var _this = this;
+        var navigateObject = this.getNavigateObject();
+        navigateObject.getUserMedia({ video: true, audio: true }, function (stream) {
             var call = peer.call(anotherid, stream);
             call.on('stream', function (remotestream) {
                 video.src = URL.createObjectURL(remotestream);
                 video.play();
             });
+            _this.call = call;
         }, function (err) {
             console.log('Failed to get stream', err);
         });
+    };
+    PeerService.prototype.getNavigateObject = function () {
+        var navigateObject = navigator;
+        navigateObject.getUserMedia = (navigateObject.getUserMedia
+            || navigateObject.webkitGetUserMedia
+            || navigateObject.mozGetUserMedia
+            || navigateObject.msGetUserMedia);
+        return navigateObject;
+    };
+    PeerService.prototype.closeCall = function () {
+        this.call.close();
     };
     return PeerService;
 }());
@@ -827,27 +865,22 @@ var UserService = (function () {
     UserService.prototype.setCurrentUser = function (user) {
         this.currentUser = user;
     };
-    UserService.prototype.saveUserLocally = function (dbResponse) {
-        var user = this.dbDataToUser(dbResponse);
-        if (user) {
+    UserService.prototype.saveUserLocally = function (userDb) {
+        if (userDb.length > 0) {
             this.setIsloggedIn(true);
+            var user = this.dataToUser(userDb[0]);
             this.setCurrentUser(user);
-        }
-    };
-    UserService.prototype.dbDataToUser = function (dbResponse) {
-        if (dbResponse.status === "OK") {
-            return this.dataToUser(dbResponse.item);
         }
         else {
             this.setIsloggedIn(false);
         }
     };
-    UserService.prototype.dataToUser = function (data) {
+    UserService.prototype.dataToUser = function (user) {
         return {
-            user_id: data.user_id,
-            name: data.name,
-            password: data.password,
-            user_friends: data.user_friends
+            user_id: user.user_id,
+            name: user.name,
+            password: user.password,
+            user_friends: user.user_friends
         };
     };
     UserService.prototype.logout = function () {
@@ -960,7 +993,6 @@ var SignupComponent = (function () {
             .switchMap(function (name) { return _this.apiService.getUserByName(name); })
             .subscribe(function (res) {
             _this.setUserNameStatus();
-            console.log(res);
             if (res.length > 0) {
                 _this.userNameExist = true;
             }
@@ -995,8 +1027,8 @@ var SignupComponent = (function () {
             password: this.model.userPassword,
             user_friends: ""
         };
-        this.apiService.createUser(user).subscribe(function (data) {
-            if (data.status = "OK") {
+        this.apiService.createUser(user).subscribe(function (userDb) {
+            if (userDb.length > 0) {
                 _this.router.navigate(['/chat']);
             }
             else {

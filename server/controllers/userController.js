@@ -14,7 +14,6 @@
       },
 
       getUsersList: function (req, res) {
-        console.log('getUsersList');
         UserModel.find(function (err, usersList) {
             if (!err) {
                 res.send(usersList);
@@ -54,7 +53,6 @@
       getUserFriendByName(req, res) {
         UserModel.find({ name: req.params.name})
         .exec(function (err, user) {
-          console.log(user);
           if (!err) {
               if(user.length > 0){
                 var friend = [{name: user[0].name, user_id: user[0].user_id}];
@@ -69,7 +67,6 @@
       },
 
       getUserById: function (req, res) {
-        console.log('getUserById', req.params.db_id);
         return UserModel.findById(req.params.db_id, function (err, user) {
             if (!err) {
                 res.send(user);
@@ -80,12 +77,11 @@
       },
       
       createUser: function(req, res) {
-        console.log(req.body);
-        var item = new UserModel(req.body);
+        var user = new UserModel(req.body);
 
-        item.save(function (err) {
+        user.save(function (err) {
             if (!err) {
-                res.send({ status: 'OK', item: item });
+                res.send([user]);
             } else {
                 console.log(err);
                 if(err.name == 'ValidationError') {
@@ -101,7 +97,6 @@
       },
 
       updateUserById: function (req, res) {
-        console.log(req.body);
         UserModel.findByIdAndUpdate(req.params.db_id, {
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -117,7 +112,6 @@
       },
 
       updateUserUseId: function (req, res) {
-        console.log(req.body);
         UserModel.findByIdAndUpdate(req.params.db_id, {
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -139,7 +133,6 @@
                 { "$set": { "name": req.body.name, "user_friends": req.body.user_friends}}
             )
             .exec(function(err, user){
-                console.log(user);
                 if (!err) {
                     res.send(user);
                 } else {
@@ -149,7 +142,6 @@
       },
 
       deleteUser: function (req, res) {
-        console.log('deleteUser2');
         UserModel.remove({'_id': req.params.db_id}, function(err){
             if (!err) {
                 res.send('Ok');

@@ -24,28 +24,22 @@ export class UserService {
     this.currentUser = user;
   }
 
-  saveUserLocally(dbResponse){
-    let user:User = this.dbDataToUser(dbResponse);
-    if (user){
+  saveUserLocally(userDb){
+    if (userDb.length > 0 ) {
       this.setIsloggedIn(true);
+      let user:User = this.dataToUser(userDb[0]);
       this.setCurrentUser(user);
-    }
-  }
-
-  dbDataToUser(dbResponse){
-    if (dbResponse.status === "OK") {
-      return this.dataToUser(dbResponse.item);
     }else{
       this.setIsloggedIn(false);
     }
   }
 
-  dataToUser(data){
+  dataToUser(user){
     return {
-      user_id: data.user_id,
-      name: data.name,
-      password: data.password,
-      user_friends: data.user_friends
+      user_id: user.user_id,
+      name: user.name,
+      password: user.password,
+      user_friends: user.user_friends
     }
   }
 

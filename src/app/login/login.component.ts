@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit {
   
   chekNameAndPassordMatch(){
     this.apiService.login(this.model.userName, this.model.userPassword)
-      .subscribe((res:any) => {
-        if(res.length > 0){
+      .subscribe((user:any) => {
+        if(user.length > 0){
           this.wrongNameOrPassword = false;
           this.router.navigate(['/chat']);
         }else{

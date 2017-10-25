@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 export class PeerService {
   peer:any;
   peerKey: object = {key: 'jis4suniffnd0a4i'};
+  call:any;
 
   constructor(public userService:UserService) { }
 
@@ -25,50 +26,61 @@ export class PeerService {
 
   monitorConnection(video){
     
-    this.peer.on('connection', function(conn) {
-      conn.on('data', function(data){
+    this.peer.on('connection', (connection) => {
+      connection.on('data', (data) => {
         console.log(data);
       });
     });
 
-    let n = <any>navigator;
-    n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia );
-    
-    this.peer.on('call', function(call) {
+    let navigateObject = this.getNavigateObject();
+    this.peer.on('call', (call) => {
+      this.call = call;
       
-      n.getUserMedia({video: true, audio: true}, function(stream) {
+      navigateObject.getUserMedia({video: true, audio: true}, (stream) => {
         call.answer(stream);
-        call.on('stream', function(remotestream){
+        call.on('stream', (remotestream) => {
           video.src = URL.createObjectURL(remotestream);
           video.play();
         });
-      }, function(err) {
+      }, (err) => {
         console.log('Failed to get stream', err);
       });
     });
   }
 
   connect(anotherid){
-    let conn = this.peer.connect(anotherid);
-    conn.on('open', function(){
-      conn.send('Message from that id');
+    let connect = this.peer.connect(anotherid);
+    connect.on('open', function(){
+      connect.send('Message from that id');
     });
   }
 
   videoconnect(video, peer, anotherid){
-    
-    let n = <any>navigator;
-    
-    n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia  || n.msGetUserMedia );
-    
-    n.getUserMedia({video: true, audio: true}, function(stream) {
-      var call = peer.call(anotherid, stream);
-      call.on('stream', function(remotestream) {
+
+    let navigateObject = this.getNavigateObject();
+    navigateObject.getUserMedia({video: true, audio: true}, (stream) => {
+      let call = peer.call(anotherid, stream);
+      call.on('stream', (remotestream) => {
         video.src = URL.createObjectURL(remotestream);
         video.play();
-      })
-    }, function(err){
+      });
+      this.call = call;
+    }, (err) => {
       console.log('Failed to get stream', err);
     })
+  }
+
+  getNavigateObject(){
+    let navigateObject = <any>navigator;
+    navigateObject.getUserMedia = (    navigateObject.getUserMedia 
+                                    || navigateObject.webkitGetUserMedia 
+                                    || navigateObject.mozGetUserMedia  
+                                    || navigateObject.msGetUserMedia 
+                                  );
+    return navigateObject;
+  }
+
+  closeCall(){
+    this.call.close();
   }
 }
