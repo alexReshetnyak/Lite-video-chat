@@ -222,7 +222,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".chat-header{\n    line-height: 40px;\n}\n\n.user-name{\n    font-size: 20px;\n    color: #9E9E9E;\n}\n\n.logout-link{\n    padding-right: 15px;\n    cursor: pointer; \n}\n\n.friends{\n    box-shadow: 0 0 5px 0 #999999;\n    padding: 20px 10px;\n}\n\n.close-call-button{\n    margin: 20px 0;\n}\n.send-button{\n    margin-top: 20px;\n}\n\n.video-wrap{\n    display: inline-block;\n    border: 1px solid #999999;\n    box-shadow: 0 0 5px 0 #999999;\n    height: 480px;\n    width: 640px;\n    background: black;\n}", ""]);
+exports.push([module.i, ".chat-header{\n    line-height: 40px;\n}\n\n.user-name{\n    font-size: 20px;\n    color: #9E9E9E;\n}\n\n.logout-link{\n    padding-right: 15px;\n    cursor: pointer; \n}\n\n.friends{\n    box-shadow: 0 0 5px 0 #999999;\n    padding: 20px 10px;\n    margin-bottom: 30px;\n}\n\n.chat-window{\n    padding: 5px;\n    margin-bottom: 10px;\n}\n\n.message-wrap{\n    border-radius: 5px;\n    padding: 5px;\n    color: #757575;\n    background-color: #ffffcc;\n}\n\n.message-wrap.message-user-wrap{\n    background-color: #c8fcc3;\n}\n\n.message-user-name{\n    color: #505050;\n}\n\n.friend-online{\n    color: #41ff41;\n}\n\n.send-button, .call-button, .close-call-button{\n    margin-top: 20px;\n}\n\n.video-wrap{\n    display: inline-block;\n    border: 1px solid #999999;\n    box-shadow: 0 0 5px 0 #999999;\n    height: 480px;\n    width: 640px;\n    background: black;\n}", ""]);
 
 // exports
 
@@ -235,7 +235,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/chat.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n    <div class=\"chat-header text-right\">\n        <span class='user-name'> {{user.name}} </span>\n        <a (click)='logout()' class=\"logout-link\"> Logout</a>\n    </div>\n\n    <div class=\"chat-container\">\n        <div class=\"friends col-md-3 col-xs-12\" >\n            <app-friends [user] = 'user'\n                         (selectUserFriend) = 'selectFriend($event)'\n                         (callFriend)='callFriend($event)'>\n            </app-friends>\n            <div>\n                <button (click)=\"closeCall()\" \n                        class=\"btn btn-default close-call-button\">\n                        CloseCall\n                </button>\n            </div>\n            \n            <div [hidden] = '!friendSelected'>Send message to {{friend.name}}</div>\n            <input  type=\"text\" \n                    [(ngModel)]=\"anotherId\" \n                    placeholder=\"AnotherId\" \n                    class=\"form-control\">\n            <button (click)=\"connect()\" class=\"btn btn-default send-button\">Send</button>\n        </div>\n        <div class=\"col-md-9 col-xs-12 text-right\">\n            <div class=\"video-wrap\">\n                <video #myvideo></video>\n            </div>\n        </div>\n    </div>\n</div>\n\n"
+module.exports = "<div>\n    <div class=\"chat-header text-right\">\n        <span class='user-name'> {{user.name}} </span>\n        <a (click)='logout()' class=\"logout-link\"> Logout</a>\n    </div>\n\n    <div class=\"chat-container\">\n        <div class=\"friends col-md-3 col-xs-12\" >\n            <app-friends [user] = 'user'\n                         (selectUserFriend) = 'selectFriend($event)'>\n            </app-friends>\n            <div class=\"chat-window\">\n                <div    *ngFor=\"let messageData of messagesData\" \n                        [ngClass]=\"{'message-wrap': true, 'message-user-wrap': (messageData.name === 'You'), 'text-right': (messageData.name === 'You')}\">\n                    <div class=\"message-user-name\">{{messageData.name}}</div>\n                    <div>{{messageData.message}}</div>\n                </div>\n            </div>\n            <div [hidden] = '!friendSelected'>\n                Send message to {{friend.name}} \n                <span *ngIf=\"selectedFriendActive\" class='friend-online'>Online</span> \n                <span *ngIf=\"!selectedFriendActive\">Offline</span> \n\n            </div>\n            <input  type=\"text\" \n                    [(ngModel)]=\"messageToFriend\" \n                    placeholder=\"Enter message\" \n                    class=\"form-control\">\n            <button (click)=\"sendMessage()\" \n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default send-button\">\n                    Send\n            </button>\n            <button (click)=\"callFriend()\" \n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default call-button\">\n                    Call\n            </button>\n            <button (click)=\"closeCall()\"\n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default close-call-button\">\n                    CloseCall\n            </button>\n        </div>\n        <div class=\"col-md-9 col-xs-12 text-center\">\n            <div class=\"video-wrap\">\n                <video #myvideo></video>\n            </div>\n        </div>\n    </div>\n</div>\n\n"
 
 /***/ }),
 
@@ -262,12 +262,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ChatComponent = (function () {
-    function ChatComponent(peerService, userService, router) {
+    function ChatComponent(peerService, userService, router, changeDetection) {
         this.peerService = peerService;
         this.userService = userService;
         this.router = router;
+        this.changeDetection = changeDetection;
+        this.messagesData = [];
         this.videoChatStatus = false;
         this.friendSelected = false;
+        this.selectedFriendActive = false;
     }
     ChatComponent.prototype.ngOnInit = function () {
         this.friend = { name: "", user_id: "" };
@@ -275,17 +278,59 @@ var ChatComponent = (function () {
         this.peer = this.peerService.getPeer();
         this.user = this.userService.getCurrentUser();
         this.peerService.monitorConnection(this.video);
+        this.monitorMessagesFromFriends();
     };
-    ChatComponent.prototype.callFriend = function (friendId) {
+    ChatComponent.prototype.monitorMessagesFromFriends = function () {
+        var _this = this;
+        this.subscribeToMessages = this.peerService.getMessageDataFromFriend()
+            .subscribe(function (messageData) {
+            if (messageData && messageData.message === 'check') {
+                _this.checkFriendStatus("answer", messageData.from.user_id);
+            }
+            else if (messageData && messageData.message === 'answer') {
+                if (_this.friend.name === messageData.from.name) {
+                    _this.selectedFriendActive = true;
+                    _this.changeDetection.detectChanges();
+                }
+            }
+            else {
+                _this.showMessageFromFriend(messageData);
+            }
+        });
+    };
+    ChatComponent.prototype.showMessageFromFriend = function (messageData) {
+        this.friendSelected = true;
+        this.friend = messageData.from;
+        this.messagesData = this.messagesData.concat([{ name: messageData.from.name, message: messageData.message }]);
+        this.changeDetection.detectChanges();
+    };
+    ChatComponent.prototype.callFriend = function () {
         this.videoChatStatus = true;
-        this.peerService.videoconnect(this.video, this.peer, friendId);
+        this.peerService.videoconnect(this.video, this.peer, this.friend.user_id);
     };
     ChatComponent.prototype.selectFriend = function (friend) {
         this.friend = friend;
+        this.checkFriendStatus('check', this.friend.user_id);
         this.friendSelected = true;
     };
-    ChatComponent.prototype.connect = function () {
-        this.peerService.connect(this.anotherId);
+    ChatComponent.prototype.sendMessage = function () {
+        var messageData = {
+            from: { name: this.user.name, user_id: this.user.user_id },
+            message: this.messageToFriend
+        };
+        this.peerService.sendMessage(messageData, this.friend.user_id);
+        this.messagesData.push({ name: "You", message: this.messageToFriend });
+        this.messageToFriend = "";
+    };
+    ChatComponent.prototype.checkFriendStatus = function (message, id) {
+        if (message === 'check') {
+            this.selectedFriendActive = false;
+        }
+        var messageData = {
+            from: { name: this.user.name, user_id: this.user.user_id },
+            message: message
+        };
+        this.peerService.sendMessage(messageData, id);
     };
     ChatComponent.prototype.logout = function () {
         this.userService.logout();
@@ -294,6 +339,9 @@ var ChatComponent = (function () {
     ChatComponent.prototype.closeCall = function () {
         this.peerService.closeCall();
         this.videoChatStatus = false;
+    };
+    ChatComponent.prototype.ngOnDestroy = function () {
+        this.subscribeToMessages.unsubscribe();
     };
     return ChatComponent;
 }());
@@ -307,10 +355,10 @@ ChatComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/chat/chat.component.html"),
         styles: [__webpack_require__("../../../../../src/app/chat/chat.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_peer_service__["a" /* PeerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_peer_service__["a" /* PeerService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_user_service__["a" /* UserService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_user_service__["a" /* UserService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_peer_service__["a" /* PeerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_peer_service__["a" /* PeerService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_user_service__["a" /* UserService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_user_service__["a" /* UserService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["l" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["l" /* ChangeDetectorRef */]) === "function" && _e || Object])
 ], ChatComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=chat.component.js.map
 
 /***/ }),
@@ -336,7 +384,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/friends/friends.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"friends-conteiner\">\n  <div class=\"add-friend-wrap\">\n      <input type=\"text\"\n      [(ngModel)]=\"friend\"\n      placeholder=\"Enter your friend name\" \n      class=\"form-control add-friend-input\">\n      <button class=\"btn btn-default\" (click)='addNewFriend()'>\n        Add friend\n      </button>\n  </div>\n  \n\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\n  <div [hidden]='!friendAlreadyInList'>You already add this user</div>\n\n  <div class=\"friends-list\">\n    <div class=\"friend-wrap\">\n      <div *ngFor=\"let friend of userFriends\" class=\"friend\" (click)='selectFriend(friend)'>\n        {{friend.name}}\n        <div class=\"friend-call\" (click)='callToFriend(friend)'>Call</div>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"friends-conteiner\">\n  <div class=\"add-friend-wrap\">\n      <input type=\"text\"\n      [(ngModel)]=\"friend\"\n      placeholder=\"Enter your friend name\" \n      class=\"form-control add-friend-input\">\n      <button class=\"btn btn-default\" (click)='addNewFriend()'>\n        Add friend\n      </button>\n  </div>\n  \n\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\n  <div [hidden]='!friendAlreadyInList'>You already add this user</div>\n\n  Select friend\n  <div class=\"friends-list\">\n    <div class=\"friend-wrap\">\n      <div *ngFor=\"let friend of userFriends\" class=\"friend\" (click)='selectFriend(friend)'>\n        {{friend.name}}\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -373,7 +421,6 @@ var FriendsComponent = (function () {
         this.router = router;
         this.apiService = apiService;
         this.userService = userService;
-        this.callFriend = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
         this.selectUserFriend = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
         this.friend = "";
         this.yourNameError = false;
@@ -424,7 +471,11 @@ var FriendsComponent = (function () {
     };
     FriendsComponent.prototype.updateUserInDb = function () {
         this.apiService.updateUser(this.user)
-            .subscribe(function (res) { });
+            .subscribe(function (res) {
+            if (!res) {
+                console.log('User not update');
+            }
+        });
     };
     FriendsComponent.prototype.getUserFriends = function () {
         if (this.user.user_friends && this.user.user_friends.length > 0) {
@@ -437,19 +488,12 @@ var FriendsComponent = (function () {
     FriendsComponent.prototype.selectFriend = function (friend) {
         this.selectUserFriend.emit(friend);
     };
-    FriendsComponent.prototype.callToFriend = function (friend) {
-        this.callFriend.emit(friend.user_id);
-    };
     return FriendsComponent;
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_5__models_user_model__["User"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__models_user_model__["User"]) === "function" && _a || Object)
 ], FriendsComponent.prototype, "user", void 0);
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["T" /* Output */])(),
-    __metadata("design:type", Object)
-], FriendsComponent.prototype, "callFriend", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["T" /* Output */])(),
     __metadata("design:type", Object)
@@ -738,6 +782,8 @@ var _a, _b;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PeerService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user_service__ = __webpack_require__("../../../../../src/app/services/user.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__ = __webpack_require__("../../../../rxjs/Subject.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -749,11 +795,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var PeerService = (function () {
     function PeerService(userService) {
         this.userService = userService;
         this.peerKey = { key: 'jis4suniffnd0a4i' };
+        this.subject = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["Subject"]();
     }
+    PeerService.prototype.setMessageFromFriend = function (messageData) {
+        this.subject.next(messageData);
+    };
+    PeerService.prototype.getMessageDataFromFriend = function () {
+        return this.subject.asObservable();
+    };
     PeerService.prototype.getUserId = function () {
         this.peer = new Peer(this.peerKey);
         return this.peer;
@@ -771,8 +825,8 @@ var PeerService = (function () {
     PeerService.prototype.monitorConnection = function (video) {
         var _this = this;
         this.peer.on('connection', function (connection) {
-            connection.on('data', function (data) {
-                console.log(data);
+            connection.on('data', function (messageData) {
+                _this.setMessageFromFriend(messageData);
             });
         });
         var navigateObject = this.getNavigateObject();
@@ -789,11 +843,18 @@ var PeerService = (function () {
             });
         });
     };
-    PeerService.prototype.connect = function (anotherid) {
-        var connect = this.peer.connect(anotherid);
-        connect.on('open', function () {
-            connect.send('Message from that id');
-        });
+    PeerService.prototype.sendMessage = function (message, id) {
+        if (this.connect && this.currentFriendId === id) {
+            this.connect.send(message);
+        }
+        else {
+            var connect_1 = this.peer.connect(id);
+            this.currentFriendId = id;
+            connect_1.on('open', function () {
+                this.connect = connect_1;
+                connect_1.send(message);
+            });
+        }
     };
     PeerService.prototype.videoconnect = function (video, peer, anotherid) {
         var _this = this;
@@ -818,7 +879,9 @@ var PeerService = (function () {
         return navigateObject;
     };
     PeerService.prototype.closeCall = function () {
-        this.call.close();
+        if (this.call) {
+            this.call.close();
+        }
     };
     return PeerService;
 }());
@@ -855,8 +918,8 @@ var UserService = (function () {
     UserService.prototype.isLoggedIn = function () {
         return this.loggedIn;
     };
-    UserService.prototype.setIsloggedIn = function (bool) {
-        this.loggedIn = bool;
+    UserService.prototype.setIsloggedIn = function (status) {
+        this.loggedIn = status;
     };
     ;
     UserService.prototype.getCurrentUser = function () {
@@ -894,8 +957,7 @@ var UserService = (function () {
         else {
             friends = [];
         }
-        friend = JSON.stringify(friend.concat(friends));
-        this.currentUser.user_friends = friend;
+        this.currentUser.user_friends = JSON.stringify(friend.concat(friends));
     };
     return UserService;
 }());
@@ -991,9 +1053,9 @@ var SignupComponent = (function () {
             .filter(function (text) { return text.length > 1; })
             .debounceTime(300)
             .switchMap(function (name) { return _this.apiService.getUserByName(name); })
-            .subscribe(function (res) {
+            .subscribe(function (user) {
             _this.setUserNameStatus();
-            if (res.length > 0) {
+            if (user.length > 0) {
                 _this.userNameExist = true;
             }
             else {

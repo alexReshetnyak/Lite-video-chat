@@ -1,13 +1,26 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class PeerService {
   peer:any;
   peerKey: object = {key: 'jis4suniffnd0a4i'};
   call:any;
+  connect: any;
+  subject = new Subject();
+  currentFriendId: string;
 
   constructor(public userService:UserService) { }
+
+  setMessageFromFriend(messageData){
+    this.subject.next(messageData);
+  }
+
+  getMessageDataFromFriend(){
+    return this.subject.asObservable();
+  }
 
   getUserId(){
     this.peer = new Peer(this.peerKey);
@@ -27,8 +40,8 @@ export class PeerService {
   monitorConnection(video){
     
     this.peer.on('connection', (connection) => {
-      connection.on('data', (data) => {
-        console.log(data);
+      connection.on('data', (messageData) => {
+        this.setMessageFromFriend(messageData);
       });
     });
 
@@ -48,11 +61,17 @@ export class PeerService {
     });
   }
 
-  connect(anotherid){
-    let connect = this.peer.connect(anotherid);
-    connect.on('open', function(){
-      connect.send('Message from that id');
-    });
+  sendMessage(message,id){
+    if (this.connect && this.currentFriendId === id){
+      this.connect.send(message);
+    }else{
+      let connect = this.peer.connect(id);
+      this.currentFriendId = id;
+      connect.on('open', function(){
+        this.connect = connect;
+        connect.send(message);
+     });
+    }
   }
 
   videoconnect(video, peer, anotherid){
@@ -81,6 +100,8 @@ export class PeerService {
   }
 
   closeCall(){
-    this.call.close();
+    if(this.call){
+      this.call.close();
+    }
   }
 }

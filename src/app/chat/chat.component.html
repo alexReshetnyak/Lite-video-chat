@@ -7,24 +7,42 @@
     <div class="chat-container">
         <div class="friends col-md-3 col-xs-12" >
             <app-friends [user] = 'user'
-                         (selectUserFriend) = 'selectFriend($event)'
-                         (callFriend)='callFriend($event)'>
+                         (selectUserFriend) = 'selectFriend($event)'>
             </app-friends>
-            <div>
-                <button (click)="closeCall()" 
-                        class="btn btn-default close-call-button">
-                        CloseCall
-                </button>
+            <div class="chat-window">
+                <div    *ngFor="let messageData of messagesData" 
+                        [ngClass]="{'message-wrap': true, 'message-user-wrap': (messageData.name === 'You'), 'text-right': (messageData.name === 'You')}">
+                    <div class="message-user-name">{{messageData.name}}</div>
+                    <div>{{messageData.message}}</div>
+                </div>
             </div>
-            
-            <div [hidden] = '!friendSelected'>Send message to {{friend.name}}</div>
+            <div [hidden] = '!friendSelected'>
+                Send message to {{friend.name}} 
+                <span *ngIf="selectedFriendActive" class='friend-online'>Online</span> 
+                <span *ngIf="!selectedFriendActive">Offline</span> 
+
+            </div>
             <input  type="text" 
-                    [(ngModel)]="anotherId" 
-                    placeholder="AnotherId" 
+                    [(ngModel)]="messageToFriend" 
+                    placeholder="Enter message" 
                     class="form-control">
-            <button (click)="connect()" class="btn btn-default send-button">Send</button>
+            <button (click)="sendMessage()" 
+                    [disabled]='!friendSelected || !selectedFriendActive'
+                    class="btn btn-default send-button">
+                    Send
+            </button>
+            <button (click)="callFriend()" 
+                    [disabled]='!friendSelected || !selectedFriendActive'
+                    class="btn btn-default call-button">
+                    Call
+            </button>
+            <button (click)="closeCall()"
+                    [disabled]='!friendSelected || !selectedFriendActive'
+                    class="btn btn-default close-call-button">
+                    CloseCall
+            </button>
         </div>
-        <div class="col-md-9 col-xs-12 text-right">
+        <div class="col-md-9 col-xs-12 text-center">
             <div class="video-wrap">
                 <video #myvideo></video>
             </div>

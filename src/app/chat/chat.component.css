@@ -15,12 +15,34 @@
 .friends{
     box-shadow: 0 0 5px 0 #999999;
     padding: 20px 10px;
+    margin-bottom: 30px;
 }
 
-.close-call-button{
-    margin: 20px 0;
+.chat-window{
+    padding: 5px;
+    margin-bottom: 10px;
 }
-.send-button{
+
+.message-wrap{
+    border-radius: 5px;
+    padding: 5px;
+    color: #757575;
+    background-color: #ffffcc;
+}
+
+.message-wrap.message-user-wrap{
+    background-color: #c8fcc3;
+}
+
+.message-user-name{
+    color: #505050;
+}
+
+.friend-online{
+    color: #41ff41;
+}
+
+.send-button, .call-button, .close-call-button{
     margin-top: 20px;
 }
 

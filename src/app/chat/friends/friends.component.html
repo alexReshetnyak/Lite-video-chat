@@ -14,11 +14,11 @@
   <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>
   <div [hidden]='!friendAlreadyInList'>You already add this user</div>
 
+  Select friend
   <div class="friends-list">
     <div class="friend-wrap">
       <div *ngFor="let friend of userFriends" class="friend" (click)='selectFriend(friend)'>
         {{friend.name}}
-        <div class="friend-call" (click)='callToFriend(friend)'>Call</div>
       </div>
     </div>
   </div>

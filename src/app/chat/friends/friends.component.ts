@@ -15,8 +15,8 @@ import { User } from '../../models/user.model';
 export class FriendsComponent implements OnInit {
   
   @Input() user: User;
-  @Output() callFriend = new EventEmitter();
   @Output() selectUserFriend = new EventEmitter();
+
   friend: string = "";
   yourNameError: boolean = false;
   friendExist:boolean = true;
@@ -73,7 +73,11 @@ export class FriendsComponent implements OnInit {
 
   updateUserInDb(){
     this.apiService.updateUser(this.user)
-      .subscribe(res => {});
+      .subscribe(res => {
+        if(!res){
+          console.log('User not update');
+        }
+      });
   }
 
   getUserFriends(){
@@ -86,9 +90,5 @@ export class FriendsComponent implements OnInit {
 
   selectFriend(friend){
     this.selectUserFriend.emit(friend);
-  }
-
-  callToFriend(friend){
-    this.callFriend.emit(friend.user_id);
   }
 }

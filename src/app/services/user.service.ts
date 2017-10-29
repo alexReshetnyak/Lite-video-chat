@@ -12,8 +12,8 @@ export class UserService {
     return this.loggedIn;
   }
 
-  setIsloggedIn(bool: boolean){
-    this.loggedIn = bool;
+  setIsloggedIn(status: boolean){
+    this.loggedIn = status;
   };
 
   getCurrentUser(){
@@ -54,8 +54,7 @@ export class UserService {
     }else{
       friends = [];
     }
-    friend = JSON.stringify([...friend, ...friends]);
-    this.currentUser.user_friends = friend;
+    this.currentUser.user_friends = JSON.stringify([...friend, ...friends]);
   }
 
 }

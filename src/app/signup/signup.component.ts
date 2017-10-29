@@ -48,9 +48,9 @@ export class SignupComponent implements OnInit {
       .filter((text) => text.length > 1)
       .debounceTime(300)
       .switchMap(name => this.apiService.getUserByName(name))
-      .subscribe(res => {
+      .subscribe(user => {
         this.setUserNameStatus();
-        if (res.length > 0) {
+        if (user.length > 0) {
           this.userNameExist = true;
         }else{
           this.userNameExist = false;
