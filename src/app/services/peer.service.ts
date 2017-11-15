@@ -1,54 +1,54 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class PeerService {
-  peer:any;
-  peerKey: object = {key: 'jis4suniffnd0a4i'};
-  call:any;
-  connect: any;
-  subject = new Subject();
-  currentFriendId: string;
+  public peer: any;
+  public peerKey: object = {key: 'jis4suniffnd0a4i'};
+  public call: any;
+  public connect: any;
+  public subject: Subject<any> = new Subject();
+  public currentFriendId: string;
 
-  constructor(public userService:UserService) { }
+  constructor(public userService: UserService) {}
 
-  setMessageFromFriend(messageData){
+  public setMessageFromFriend(messageData): void {
     this.subject.next(messageData);
   }
 
-  getMessageDataFromFriend(){
+  public getMessageDataFromFriend(): Observable<any> {
     return this.subject.asObservable();
   }
 
-  getUserId(){
+  public getUserId(): any {
     this.peer = new Peer(this.peerKey);
     return this.peer;
   }
 
-  getPeer(){
-    if (this.peer && this.peer.id && this.peer.id.length === 16){
+  public getPeer(): any {
+    if (this.peer && this.peer.id && this.peer.id.length === 16) {
       return this.peer;
-    }else{
-      let user = this.userService.getCurrentUser();
+    } else {
+      const user = this.userService.getCurrentUser();
       this.peer = new Peer(user.user_id, this.peerKey);
       return this.peer;
     }
   }
 
-  monitorConnection(video){
-    
+  public monitorConnection(video): void {
+
     this.peer.on('connection', (connection) => {
       connection.on('data', (messageData) => {
         this.setMessageFromFriend(messageData);
       });
     });
 
-    let navigateObject = this.getNavigateObject();
+    const navigateObject = this.getNavigateObject();
     this.peer.on('call', (call) => {
       this.call = call;
-      
+
       navigateObject.getUserMedia({video: true, audio: true}, (stream) => {
         call.answer(stream);
         call.on('stream', (remotestream) => {
@@ -61,24 +61,24 @@ export class PeerService {
     });
   }
 
-  sendMessage(message,id){
-    if (this.connect && this.currentFriendId === id){
+  public sendMessage(message, id): void {
+    if (this.connect && this.currentFriendId === id) {
       this.connect.send(message);
-    }else{
-      let connect = this.peer.connect(id);
+    } else {
+      const connect = this.peer.connect(id);
       this.currentFriendId = id;
-      connect.on('open', function(){
+      connect.on('open', function() {
         this.connect = connect;
         connect.send(message);
      });
     }
   }
 
-  videoconnect(video, peer, anotherid){
+  public videoconnect(video, peer, anotherid): void {
 
-    let navigateObject = this.getNavigateObject();
+    const navigateObject = this.getNavigateObject();
     navigateObject.getUserMedia({video: true, audio: true}, (stream) => {
-      let call = peer.call(anotherid, stream);
+      const call = peer.call(anotherid, stream);
       call.on('stream', (remotestream) => {
         video.src = URL.createObjectURL(remotestream);
         video.play();
@@ -86,21 +86,21 @@ export class PeerService {
       this.call = call;
     }, (err) => {
       console.log('Failed to get stream', err);
-    })
+    });
   }
 
-  getNavigateObject(){
-    let navigateObject = <any>navigator;
-    navigateObject.getUserMedia = (    navigateObject.getUserMedia 
-                                    || navigateObject.webkitGetUserMedia 
-                                    || navigateObject.mozGetUserMedia  
-                                    || navigateObject.msGetUserMedia 
+  public getNavigateObject(): any {
+    const navigateObject = <any>navigator;
+    navigateObject.getUserMedia = (    navigateObject.getUserMedia
+                                    || navigateObject.webkitGetUserMedia
+                                    || navigateObject.mozGetUserMedia
+                                    || navigateObject.msGetUserMedia
                                   );
     return navigateObject;
   }
 
-  closeCall(){
-    if(this.call){
+  public closeCall(): void {
+    if (this.call) {
       this.call.close();
     }
   }

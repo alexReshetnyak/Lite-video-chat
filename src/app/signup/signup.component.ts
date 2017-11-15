@@ -13,36 +13,35 @@ import { User } from '../models/user.model';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
-  
-  @ViewChild('signupForm') signupForm: NgForm;
-  @ViewChild('userName') userNameInput: ElementRef;
-  windowHeight: string;
-  model:SignUpForm;
-  userNameValid:boolean = true;
-  userNameExist: boolean = false;
-  confirmPasswordValid: boolean = true;
+
+  @ViewChild('signupForm') public signupForm: NgForm;
+  @ViewChild('userName') public userNameInput: ElementRef;
+  public windowHeight: string;
+  public model:SignUpForm;
+  public userNameValid:boolean = true;
+  public userNameExist: boolean = false;
+  public confirmPasswordValid: boolean = true;
 
   constructor( public apiService: ApiService,
                public peerService: PeerService,
                public router: Router
-              ){}
+              ) {}
 
-  ngOnInit(){
+  public ngOnInit(): void {
     this.model = new SignUpForm('', '', '');
     this.windowHeight = `${window.innerHeight}px`;
     this.checkLogin();
   }
 
-  checkPasswordsMatch(){
-    if (this.model.userPassword === this.model.confirmPassword){
+  public checkPasswordsMatch(): void {
+    if (this.model.userPassword === this.model.confirmPassword) {
       this.confirmPasswordValid = true;
-    }else{
+    } else {
       this.confirmPasswordValid = false;
     }
   }
 
-  checkLogin(){
-
+  public checkLogin(): void {
     Observable.fromEvent(this.userNameInput.nativeElement, 'keyup')
       .map( (event:any) => event.target.value)
       .filter((text) => text.length > 1)
@@ -52,42 +51,42 @@ export class SignupComponent implements OnInit {
         this.setUserNameStatus();
         if (user.length > 0) {
           this.userNameExist = true;
-        }else{
+        } else {
           this.userNameExist = false;
         }
       });
   }
 
-  setUserNameStatus(){
-    if(this.signupForm.controls.userName.pristine || this.signupForm.controls.userName.valid){
+  public setUserNameStatus(): void {
+    if (this.signupForm.controls.userName.pristine || this.signupForm.controls.userName.valid) {
       this.userNameValid = true;
-    }else{
+    } else {
       this.userNameValid = false;
     }
   }
 
-  getUserId(){
-    let peer = this.peerService.getUserId();
-    let interval$ = Observable.interval(50);
-    let subscription = interval$.subscribe(step => {
-      if(peer.id != undefined){
+  public getUserId(): void {
+    const peer = this.peerService.getUserId();
+    const interval$ = Observable.interval(50);
+    const subscription = interval$.subscribe(step => {
+      if (peer.id != undefined) {
         subscription.unsubscribe();
-        this.createUser(peer.id);          
+        this.createUser(peer.id);
       }
     });
   }
 
-  createUser(id){
-    let user: User = {user_id: id,
-                      name: this.model.userName,
-                      password: this.model.userPassword,
-                      user_friends: ""
-                      };
-    this.apiService.createUser(user).subscribe((userDb:any) => {
+  public createUser(id): void {
+    const user: User = {user_id: id,
+                        name: this.model.userName,
+                        password: this.model.userPassword,
+                        user_friends: ''
+                       };
+    this.apiService.createUser(user).subscribe((userDb: any) => {
 
       if (userDb.length > 0) {
         this.router.navigate(['/chat']);
-      }else{
+      } else {
         console.log('Error on server');
       }
     });

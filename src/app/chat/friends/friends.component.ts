@@ -12,37 +12,38 @@ import { User } from '../../models/user.model';
   templateUrl: './friends.component.html',
   styleUrls: ['./friends.component.css']
 })
-export class FriendsComponent implements OnInit {
-  
-  @Input() user: User;
-  @Output() selectUserFriend = new EventEmitter();
 
-  friend: string = "";
-  yourNameError: boolean = false;
-  friendExist:boolean = true;
-  friendAlreadyInList: boolean = false;
-  userFriends:Array<{name, user_id}> = [];
+export class FriendsComponent implements OnInit {
+
+  @Input() public user: User;
+  @Output() public selectUserFriend = new EventEmitter();
+
+  public friend: string = '';
+  public yourNameError: boolean = false;
+  public friendExist:boolean = true;
+  public friendAlreadyInList: boolean = false;
+  public userFriends: Array<{name, user_id}> = [];
 
   constructor( public peerService: PeerService,
                public router: Router,
                public apiService: ApiService,
                public userService: UserService,
-              ){}
+              ) {}
 
-  ngOnInit(){
+  public ngOnInit(): void {
     this.getUserFriends();
   }
 
-  addNewFriend(){
+  public addNewFriend(): void {
     this.yourNameError = false;
     this.friendExist = true;
     this.friendAlreadyInList = false;
 
-    if (this.friend === this.user.name){
+    if (this.friend === this.user.name) {
       this.yourNameError = true;
-    }else if(this.checkForFriendInList(this.friend)){
+    }else if(this.checkForFriendInList(this.friend)) {
       this.friendAlreadyInList = true;
-    }else{
+    } else {
       this.apiService.getFriend(this.friend)
       .subscribe(friend => {
         this.saveFriend(friend);
@@ -50,7 +51,7 @@ export class FriendsComponent implements OnInit {
     }
   }
 
-  checkForFriendInList(friend){
+  public checkForFriendInList(friend): boolean {
     let exist = false;
     this.userFriends.forEach(userFriend => {
       if(userFriend.name === friend){
@@ -60,27 +61,27 @@ export class FriendsComponent implements OnInit {
     return exist;
   }
 
-  saveFriend(friend){
+  public saveFriend(friend): void {
     if (friend.length > 0) {
       this.userService.saveFriend(friend);
       this.user = this.userService.getCurrentUser();
       this.updateUserInDb();
       this.getUserFriends();
-    }else{
+    } else {
       this.friendExist = false;
     }
   }
 
-  updateUserInDb(){
+  public updateUserInDb(): void {
     this.apiService.updateUser(this.user)
       .subscribe(res => {
-        if(!res){
+        if (!res) {
           console.log('User not update');
         }
       });
   }
 
-  getUserFriends(){
+  public getUserFriends(): void {
     if (this.user.user_friends && this.user.user_friends.length > 0){
       this.userFriends = JSON.parse(this.user.user_friends);
     }else{
@@ -88,7 +89,7 @@ export class FriendsComponent implements OnInit {
     }
   }
 
-  selectFriend(friend){
+  public selectFriend(friend): void {
     this.selectUserFriend.emit(friend);
   }
 }

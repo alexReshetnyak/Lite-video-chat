@@ -3,58 +3,58 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class UserService {
+
   public loggedIn: boolean = false;
-  public currentUser:User;
+  public currentUser: User;
 
-  constructor() { }
+  constructor() {}
 
-  isLoggedIn(){
+  public isLoggedIn(): boolean {
     return this.loggedIn;
   }
 
-  setIsloggedIn(status: boolean){
+  public setIsloggedIn(status: boolean): void {
     this.loggedIn = status;
-  };
+  }
 
-  getCurrentUser(){
+  public getCurrentUser(): User {
     return this.currentUser;
   }
 
-  setCurrentUser(user:User){
+  public setCurrentUser(user: User): void {
     this.currentUser = user;
   }
 
-  saveUserLocally(userDb){
+  public saveUserLocally(userDb): void {
     if (userDb.length > 0 ) {
       this.setIsloggedIn(true);
-      let user:User = this.dataToUser(userDb[0]);
+      const user: User = this.dataToUser(userDb[0]);
       this.setCurrentUser(user);
-    }else{
+    } else {
       this.setIsloggedIn(false);
     }
   }
 
-  dataToUser(user){
+  public dataToUser(user): User {
     return {
       user_id: user.user_id,
       name: user.name,
       password: user.password,
       user_friends: user.user_friends
-    }
+    };
   }
 
-  logout() {
+  public logout(): void {
     this.setIsloggedIn(false);
   }
 
-  saveFriend(friend){
+  public saveFriend(friend): void {
     let friends;
     if (this.currentUser.user_friends && this.currentUser.user_friends.length > 0) {
       friends = JSON.parse(this.currentUser.user_friends);
-    }else{
+    } else {
       friends = [];
     }
     this.currentUser.user_friends = JSON.stringify([...friend, ...friends]);
   }
-
 }

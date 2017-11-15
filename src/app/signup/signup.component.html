@@ -23,8 +23,7 @@
             <input  type="password"
                     class="form-control" 
                     placeholder="Password" 
-                    minlength="6" 
-                    required
+                    minlength="6"
                     name = 'userPassword'
                     #userPassword = 'ngModel'
                     [(ngModel)] = 'model.userPassword' 
@@ -35,8 +34,7 @@
             <input  type="password"
                     class="form-control" 
                     placeholder="Confirm password" 
-                    minlength="6" 
-                    required
+                    minlength="6"
                     (keyup)='checkPasswordsMatch()'
                     name = 'confirmPassword'
                     #confirmPassword = 'ngModel'

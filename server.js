@@ -1,4 +1,4 @@
-var express         = require('express'),
+var express     = require('express'),
 path            = require('path'),
 mongoose        = require('mongoose'),
 logger          = require('morgan'),
@@ -14,7 +14,6 @@ app.use(bodyParser.json({type: 'application/json'}));
 app.use(logger('dev'));
 app.use('/', router);
 
-
 app.use(function(err, req, res, next){
     res.status(err.status || 500);
     console.log('Internal error(%d): %s',res.statusCode,err.message);
@@ -26,7 +25,6 @@ app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-
 // connect to db
 mongoose.connect(appConfig.database);
 mongoose.connection.on('error', function(err) {
@@ -37,6 +35,6 @@ mongoose.connection.once('open', function() {
 });
 
 // start server
-app.listen(appConfig.port, function(){
+app.listen(appConfig.port, function() {
     console.log('Express server listening on port 3000');
 });

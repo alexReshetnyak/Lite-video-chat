@@ -103,7 +103,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n    <router-outlet></router-outlet>\n</div>"
+module.exports = "<div class=\"container\">\r\n    <router-outlet></router-outlet>\r\n</div>"
 
 /***/ }),
 
@@ -222,7 +222,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".chat-header{\n    line-height: 40px;\n}\n\n.user-name{\n    font-size: 20px;\n    color: #9E9E9E;\n}\n\n.logout-link{\n    padding-right: 15px;\n    cursor: pointer; \n}\n\n.friends{\n    box-shadow: 0 0 5px 0 #999999;\n    padding: 20px 10px;\n    margin-bottom: 30px;\n}\n\n.chat-window{\n    padding: 5px;\n    margin-bottom: 10px;\n}\n\n.message-wrap{\n    border-radius: 5px;\n    padding: 5px;\n    color: #757575;\n    background-color: #ffffcc;\n}\n\n.message-wrap.message-user-wrap{\n    background-color: #c8fcc3;\n}\n\n.message-user-name{\n    color: #505050;\n}\n\n.friend-online{\n    color: #41ff41;\n}\n\n.send-button, .call-button, .close-call-button{\n    margin-top: 20px;\n}\n\n.video-wrap{\n    display: inline-block;\n    border: 1px solid #999999;\n    box-shadow: 0 0 5px 0 #999999;\n    height: 480px;\n    width: 640px;\n    background: black;\n}", ""]);
+exports.push([module.i, ".chat-header{\r\n    line-height: 40px;\r\n}\r\n\r\n.user-name{\r\n    font-size: 20px;\r\n    color: #9E9E9E;\r\n}\r\n\r\n.logout-link{\r\n    padding-right: 15px;\r\n    cursor: pointer; \r\n}\r\n\r\n.friends{\r\n    box-shadow: 0 0 5px 0 #999999;\r\n    padding: 20px 10px;\r\n    margin-bottom: 30px;\r\n}\r\n\r\n.chat-window{\r\n    padding: 5px;\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.message-wrap{\r\n    border-radius: 5px;\r\n    padding: 5px;\r\n    color: #757575;\r\n    background-color: #ffffcc;\r\n}\r\n\r\n.message-wrap.message-user-wrap{\r\n    background-color: #c8fcc3;\r\n}\r\n\r\n.message-user-name{\r\n    color: #505050;\r\n}\r\n\r\n.friend-online{\r\n    color: #41ff41;\r\n}\r\n\r\n.send-button, .call-button, .close-call-button{\r\n    margin-top: 20px;\r\n}\r\n\r\n.video-wrap{\r\n    display: inline-block;\r\n    border: 1px solid #999999;\r\n    box-shadow: 0 0 5px 0 #999999;\r\n    height: 480px;\r\n    width: 640px;\r\n    background: black;\r\n}", ""]);
 
 // exports
 
@@ -235,7 +235,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/chat.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n    <div class=\"chat-header text-right\">\n        <span class='user-name'> {{user.name}} </span>\n        <a (click)='logout()' class=\"logout-link\"> Logout</a>\n    </div>\n\n    <div class=\"chat-container\">\n        <div class=\"friends col-md-3 col-xs-12\" >\n            <app-friends [user] = 'user'\n                         (selectUserFriend) = 'selectFriend($event)'>\n            </app-friends>\n            <div class=\"chat-window\">\n                <div    *ngFor=\"let messageData of messagesData\" \n                        [ngClass]=\"{'message-wrap': true, 'message-user-wrap': (messageData.name === 'You'), 'text-right': (messageData.name === 'You')}\">\n                    <div class=\"message-user-name\">{{messageData.name}}</div>\n                    <div>{{messageData.message}}</div>\n                </div>\n            </div>\n            <div [hidden] = '!friendSelected'>\n                Send message to {{friend.name}} \n                <span *ngIf=\"selectedFriendActive\" class='friend-online'>Online</span> \n                <span *ngIf=\"!selectedFriendActive\">Offline</span> \n\n            </div>\n            <input  type=\"text\" \n                    [(ngModel)]=\"messageToFriend\" \n                    placeholder=\"Enter message\" \n                    class=\"form-control\">\n            <button (click)=\"sendMessage()\" \n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default send-button\">\n                    Send\n            </button>\n            <button (click)=\"callFriend()\" \n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default call-button\">\n                    Call\n            </button>\n            <button (click)=\"closeCall()\"\n                    [disabled]='!friendSelected || !selectedFriendActive'\n                    class=\"btn btn-default close-call-button\">\n                    CloseCall\n            </button>\n        </div>\n        <div class=\"col-md-9 col-xs-12 text-center\">\n            <div class=\"video-wrap\">\n                <video #myvideo></video>\n            </div>\n        </div>\n    </div>\n</div>\n\n"
+module.exports = "<div>\r\n    <div class=\"chat-header text-right\">\r\n        <span class='user-name'> {{user.name}} </span>\r\n        <a (click)='logout()' class=\"logout-link\"> Logout</a>\r\n    </div>\r\n\r\n    <div class=\"chat-container\">\r\n        <div class=\"friends col-md-3 col-xs-12\" >\r\n            <app-friends [user] = 'user'\r\n                         (selectUserFriend) = 'selectFriend($event)'>\r\n            </app-friends>\r\n            <div class=\"chat-window\">\r\n                <div    *ngFor=\"let messageData of messagesData\" \r\n                        [ngClass]=\"{'message-wrap': true, 'message-user-wrap': (messageData.name === 'You'), 'text-right': (messageData.name === 'You')}\">\r\n                    <div class=\"message-user-name\">{{messageData.name}}</div>\r\n                    <div>{{messageData.message}}</div>\r\n                </div>\r\n            </div>\r\n            <div [hidden] = '!friendSelected'>\r\n                Send message to {{friend.name}} \r\n                <span *ngIf=\"selectedFriendActive\" class='friend-online'>Online</span> \r\n                <span *ngIf=\"!selectedFriendActive\">Offline</span> \r\n\r\n            </div>\r\n            <input  type=\"text\" \r\n                    [(ngModel)]=\"messageToFriend\" \r\n                    placeholder=\"Enter message\" \r\n                    class=\"form-control\">\r\n            <button (click)=\"sendMessage()\" \r\n                    [disabled]='!friendSelected || !selectedFriendActive'\r\n                    class=\"btn btn-default send-button\">\r\n                    Send\r\n            </button>\r\n            <button (click)=\"callFriend()\" \r\n                    [disabled]='!friendSelected || !selectedFriendActive'\r\n                    class=\"btn btn-default call-button\">\r\n                    Call\r\n            </button>\r\n            <button (click)=\"closeCall()\"\r\n                    [disabled]='!friendSelected || !selectedFriendActive'\r\n                    class=\"btn btn-default close-call-button\">\r\n                    CloseCall\r\n            </button>\r\n        </div>\r\n        <div class=\"col-md-9 col-xs-12 text-center\">\r\n            <div class=\"video-wrap\">\r\n                <video #myvideo></video>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n"
 
 /***/ }),
 
@@ -273,7 +273,7 @@ var ChatComponent = (function () {
         this.selectedFriendActive = false;
     }
     ChatComponent.prototype.ngOnInit = function () {
-        this.friend = { name: "", user_id: "" };
+        this.friend = { name: '', user_id: '' };
         this.video = this.myVideo.nativeElement;
         this.peer = this.peerService.getPeer();
         this.user = this.userService.getCurrentUser();
@@ -285,7 +285,7 @@ var ChatComponent = (function () {
         this.subscribeToMessages = this.peerService.getMessageDataFromFriend()
             .subscribe(function (messageData) {
             if (messageData && messageData.message === 'check') {
-                _this.checkFriendStatus("answer", messageData.from.user_id);
+                _this.checkFriendStatus('answer', messageData.from.user_id);
             }
             else if (messageData && messageData.message === 'answer') {
                 if (_this.friend.name === messageData.from.name) {
@@ -319,8 +319,8 @@ var ChatComponent = (function () {
             message: this.messageToFriend
         };
         this.peerService.sendMessage(messageData, this.friend.user_id);
-        this.messagesData.push({ name: "You", message: this.messageToFriend });
-        this.messageToFriend = "";
+        this.messagesData.push({ name: 'You', message: this.messageToFriend });
+        this.messageToFriend = '';
     };
     ChatComponent.prototype.checkFriendStatus = function (message, id) {
         if (message === 'check') {
@@ -371,7 +371,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".add-friend-wrap{\n    margin-bottom: 20px;\n}\n\n.add-friend-input{\n    margin-bottom: 10px;\n}\n\n\n.friend-wrap{\n    border: 1px solid #CFCFCF;\n}\n.friend{\n    cursor: pointer;\n    color: #9E9E9E;\n    border-bottom: 1px solid #CFCFCF;\n    font-size: 16px;\n    padding: 5px 0px 5px 10px;\n}\n\n.friend:last-child{\n    border: none;\n}\n\n.friend:hover{\n    box-shadow: 0px 0px 3px 0px #CFCFCF inset;\n}\n\n.friend-call{\n    float: right;\n    padding-right: 5px;\n}", ""]);
+exports.push([module.i, ".add-friend-wrap{\r\n    margin-bottom: 20px;\r\n}\r\n\r\n.add-friend-input{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n\r\n.friend-wrap{\r\n    border: 1px solid #CFCFCF;\r\n}\r\n.friend{\r\n    cursor: pointer;\r\n    color: #9E9E9E;\r\n    border-bottom: 1px solid #CFCFCF;\r\n    font-size: 16px;\r\n    padding: 5px 0px 5px 10px;\r\n}\r\n\r\n.friend:last-child{\r\n    border: none;\r\n}\r\n\r\n.friend:hover{\r\n    box-shadow: 0px 0px 3px 0px #CFCFCF inset;\r\n}\r\n\r\n.friend-call{\r\n    float: right;\r\n    padding-right: 5px;\r\n}", ""]);
 
 // exports
 
@@ -384,7 +384,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/chat/friends/friends.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"friends-conteiner\">\n  <div class=\"add-friend-wrap\">\n      <input type=\"text\"\n      [(ngModel)]=\"friend\"\n      placeholder=\"Enter your friend name\" \n      class=\"form-control add-friend-input\">\n      <button class=\"btn btn-default\" (click)='addNewFriend()'>\n        Add friend\n      </button>\n  </div>\n  \n\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\n  <div [hidden]='!friendAlreadyInList'>You already add this user</div>\n\n  Select friend\n  <div class=\"friends-list\">\n    <div class=\"friend-wrap\">\n      <div *ngFor=\"let friend of userFriends\" class=\"friend\" (click)='selectFriend(friend)'>\n        {{friend.name}}\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"friends-conteiner\">\r\n  <div class=\"add-friend-wrap\">\r\n      <input type=\"text\"\r\n      [(ngModel)]=\"friend\"\r\n      placeholder=\"Enter your friend name\" \r\n      class=\"form-control add-friend-input\">\r\n      <button class=\"btn btn-default\" (click)='addNewFriend()'>\r\n        Add friend\r\n      </button>\r\n  </div>\r\n  \r\n\r\n  <div class=\"friend-not-found\" [hidden]='friendExist'>Friend not found</div>\r\n  <div [hidden]='!yourNameError'>You entered your name, please try something else...</div>\r\n  <div [hidden]='!friendAlreadyInList'>You already add this user</div>\r\n\r\n  Select friend\r\n  <div class=\"friends-list\">\r\n    <div class=\"friend-wrap\">\r\n      <div *ngFor=\"let friend of userFriends\" class=\"friend\" (click)='selectFriend(friend)'>\r\n        {{friend.name}}\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -422,7 +422,7 @@ var FriendsComponent = (function () {
         this.apiService = apiService;
         this.userService = userService;
         this.selectUserFriend = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["x" /* EventEmitter */]();
-        this.friend = "";
+        this.friend = '';
         this.yourNameError = false;
         this.friendExist = true;
         this.friendAlreadyInList = false;
@@ -570,7 +570,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "\n.container-for-form{\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n\n.login-title{\n    color: #555;\n    font-size: 18px;\n    font-weight: 400;\n    display: block;\n}\n\n.login-form-wrap{\n    width: 400px;\n    box-shadow: 0 0 5px 0 #999999;\n    border-radius: 5px;\n    padding: 20px 0;\n}\n\n.form-login{\n    max-width: 330px;\n    padding: 15px;\n    margin: 0 auto;\n}\n\n.form-login .form-login-heading{\n    margin-bottom: 10px;\n}\n\n\n.form-login .form-control{\n    position: relative;\n    font-size: 16px;\n    height: auto;\n    padding: 10px;\n    box-sizing: border-box;\n}\n\n.form-login .form-control:focus{\n    z-index: 2;\n}\n\n.form-login input[type=\"text\"]{\n    margin-bottom: -1px;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n\n.form-login input:nth-of-type(2){\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n\n.button-submit{\n    margin-top: 20px;\n}", ""]);
+exports.push([module.i, "\r\n.container-for-form{\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n}\r\n\r\n.login-title{\r\n    color: #555;\r\n    font-size: 18px;\r\n    font-weight: 400;\r\n    display: block;\r\n}\r\n\r\n.login-form-wrap{\r\n    width: 400px;\r\n    box-shadow: 0 0 5px 0 #999999;\r\n    border-radius: 5px;\r\n    padding: 20px 0;\r\n}\r\n\r\n.form-login{\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n}\r\n\r\n.form-login .form-login-heading{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n\r\n.form-login .form-control{\r\n    position: relative;\r\n    font-size: 16px;\r\n    height: auto;\r\n    padding: 10px;\r\n    box-sizing: border-box;\r\n}\r\n\r\n.form-login .form-control:focus{\r\n    z-index: 2;\r\n}\r\n\r\n.form-login input[type=\"text\"]{\r\n    margin-bottom: -1px;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n}\r\n\r\n.form-login input:nth-of-type(2){\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n}\r\n\r\n.button-submit{\r\n    margin-top: 20px;\r\n}", ""]);
 
 // exports
 
@@ -583,7 +583,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/login/login.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\n  <div class=\"row\">\n      <div class=\"login-form-wrap\">\n        <h1 class=\"text-center login-title\">Login to continue</h1>\n        <div class=\"account-wall\">\n          <form class=\"form-login\" (ngSubmit)='loggingIn()' #loginForm = 'ngForm'>\n            <input  type=\"text\"\n                    class=\"form-control user-name-input\" \n                    placeholder=\"Username\"\n                    minlength=\"4\" \n                    required\n                    name = 'userName'\n                    #userName = 'ngModel'\n                    [(ngModel)] = 'model.userName'\n                    autofocus>\n            <div  [hidden]='userName.valid || userName.pristine' class=\"error-message\">\n                Name is required\n            </div>\n            <input  type=\"password\"\n                    class=\"form-control\" \n                    placeholder=\"Password\" \n                    minlength=\"6\" \n                    required\n                    name = 'userPassword'\n                    #userPassword = 'ngModel'\n                    [(ngModel)] = 'model.userPassword' \n                    required>\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\n              Password is required\n            </div>\n            <div  [hidden]='!wrongNameOrPassword' class=\"error-message\">\n              wrong name or password\n            </div>\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\n                    [disabled]='loginForm.form.invalid' \n                    type=\"submit\">\n              Login\n            </button>\n            </form>\n        </div>\n        <div class=\"text-center\">\n          <a [routerLink]=\"'/signup'\">Do not have account yet?</a>\n        </div> \n      </div>\n    </div>\n</div>"
+module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\r\n  <div class=\"row\">\r\n      <div class=\"login-form-wrap\">\r\n        <h1 class=\"text-center login-title\">Login to continue</h1>\r\n        <div class=\"account-wall\">\r\n          <form class=\"form-login\" (ngSubmit)='loggingIn()' #loginForm = 'ngForm'>\r\n            <input  type=\"text\"\r\n                    class=\"form-control user-name-input\" \r\n                    placeholder=\"Username\"\r\n                    minlength=\"4\" \r\n                    required\r\n                    name = 'userName'\r\n                    #userName = 'ngModel'\r\n                    [(ngModel)] = 'model.userName'\r\n                    autofocus>\r\n            <div  [hidden]='userName.valid || userName.pristine' class=\"error-message\">\r\n                Name is required\r\n            </div>\r\n            <input  type=\"password\"\r\n                    class=\"form-control\" \r\n                    placeholder=\"Password\" \r\n                    minlength=\"6\" \r\n                    required\r\n                    name = 'userPassword'\r\n                    #userPassword = 'ngModel'\r\n                    [(ngModel)] = 'model.userPassword' \r\n                    required>\r\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\r\n              Password is required\r\n            </div>\r\n            <div  [hidden]='!wrongNameOrPassword' class=\"error-message\">\r\n              wrong name or password\r\n            </div>\r\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\r\n                    [disabled]='loginForm.form.invalid' \r\n                    type=\"submit\">\r\n              Login\r\n            </button>\r\n            </form>\r\n        </div>\r\n        <div class=\"text-center\">\r\n          <a [routerLink]=\"'/signup'\">Do not have account yet?</a>\r\n        </div> \r\n      </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -749,7 +749,8 @@ var ApiService = (function () {
     };
     ApiService.prototype.updateUser = function (user) {
         return this.http.put(this.userUrl + "/" + user.name, user)
-            .map(function (res) { return res.json(); });
+            .map(function (res) { return res.json(); })
+            .catch(this.handleError);
     };
     ApiService.prototype.handleError = function (err) {
         var errMessage;
@@ -921,7 +922,6 @@ var UserService = (function () {
     UserService.prototype.setIsloggedIn = function (status) {
         this.loggedIn = status;
     };
-    ;
     UserService.prototype.getCurrentUser = function () {
         return this.currentUser;
     };
@@ -978,7 +978,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "\n.container-for-form{\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n\n.signup-title{\n    color: #555;\n    font-size: 18px;\n    font-weight: 400;\n    display: block;\n}\n\n.signup-form-wrap{\n    width: 400px;\n    box-shadow: 0 0 5px 0 #999999;\n    border-radius: 5px;\n    padding: 20px 0;\n}\n\n.form-signup{\n    max-width: 330px;\n    padding: 15px;\n    margin: 0 auto;\n}\n\n.form-signup .form-signup-heading{\n    margin-bottom: 10px;\n}\n\n\n.form-signup .form-control{\n    position: relative;\n    font-size: 16px;\n    height: auto;\n    padding: 10px;\n    box-sizing: border-box;\n}\n\n.form-signup .form-control:focus{\n    z-index: 2;\n}\n\n.form-signup input[type=\"text\"]{\n    margin-bottom: -1px;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n\n.form-signup input:nth-of-type(2){\n    border-radius: 0;\n    border-radius: 0;\n    margin-bottom: -1px;\n}\n\n.form-signup input:nth-of-type(3){\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n\n.button-submit{\n    margin-top: 20px;\n}", ""]);
+exports.push([module.i, "\r\n.container-for-form{\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n}\r\n\r\n.signup-title{\r\n    color: #555;\r\n    font-size: 18px;\r\n    font-weight: 400;\r\n    display: block;\r\n}\r\n\r\n.signup-form-wrap{\r\n    width: 400px;\r\n    box-shadow: 0 0 5px 0 #999999;\r\n    border-radius: 5px;\r\n    padding: 20px 0;\r\n}\r\n\r\n.form-signup{\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n}\r\n\r\n.form-signup .form-signup-heading{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n\r\n.form-signup .form-control{\r\n    position: relative;\r\n    font-size: 16px;\r\n    height: auto;\r\n    padding: 10px;\r\n    box-sizing: border-box;\r\n}\r\n\r\n.form-signup .form-control:focus{\r\n    z-index: 2;\r\n}\r\n\r\n.form-signup input[type=\"text\"]{\r\n    margin-bottom: -1px;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n}\r\n\r\n.form-signup input:nth-of-type(2){\r\n    border-radius: 0;\r\n    margin-bottom: -1px;\r\n}\r\n\r\n.form-signup input:nth-of-type(3){\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n}\r\n\r\n.button-submit{\r\n    margin-top: 20px;\r\n}", ""]);
 
 // exports
 
@@ -991,7 +991,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/signup/signup.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\n  <div class=\"row\">\n      <div class=\"signup-form-wrap\">\n        <h1 class=\"text-center signup-title\">Sign up to continue</h1>\n        <div class=\"account-wall\">\n          <form class=\"form-signup\" (ngSubmit)='getUserId()' #signupForm = 'ngForm'>\n            <input  type=\"text\"\n                    class=\"form-control user-name-input\" \n                    placeholder=\"Username\"\n                    minlength=\"4\" \n                    required\n                    name = 'userName'\n                    #userName\n                    [(ngModel)] = 'model.userName'\n                    autofocus>\n            <div  [hidden]='userNameValid'\n                  class=\"error-message\">\n                Name is required\n            </div>\n            <div  [hidden]='!userNameExist' class=\"error-message\">\n                Name is already exist\n            </div>\n            <input  type=\"password\"\n                    class=\"form-control\" \n                    placeholder=\"Password\" \n                    minlength=\"6\" \n                    required\n                    name = 'userPassword'\n                    #userPassword = 'ngModel'\n                    [(ngModel)] = 'model.userPassword' \n                    required>\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\n              Password is required\n            </div>\n            <input  type=\"password\"\n                    class=\"form-control\" \n                    placeholder=\"Confirm password\" \n                    minlength=\"6\" \n                    required\n                    (keyup)='checkPasswordsMatch()'\n                    name = 'confirmPassword'\n                    #confirmPassword = 'ngModel'\n                    [(ngModel)] = 'model.confirmPassword' \n                    required>\n            <div [hidden] = 'confirmPasswordValid' class=\"error-message error-message-confirm-password\">\n                Passwords do not match\n            </div>\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\n                    [disabled]='signupForm.form.invalid || !confirmPasswordValid || userNameExist' \n                    type=\"submit\">\n              Sign up\n            </button>\n            </form>\n        </div>  \n      </div>\n    </div>\n</div>"
+module.exports = "<div class=\"container-for-form\" [ngStyle]=\"{'height': windowHeight}\">\r\n  <div class=\"row\">\r\n      <div class=\"signup-form-wrap\">\r\n        <h1 class=\"text-center signup-title\">Sign up to continue</h1>\r\n        <div class=\"account-wall\">\r\n          <form class=\"form-signup\" (ngSubmit)='getUserId()' #signupForm = 'ngForm'>\r\n            <input  type=\"text\"\r\n                    class=\"form-control user-name-input\" \r\n                    placeholder=\"Username\"\r\n                    minlength=\"4\" \r\n                    required\r\n                    name = 'userName'\r\n                    #userName\r\n                    [(ngModel)] = 'model.userName'\r\n                    autofocus>\r\n            <div  [hidden]='userNameValid'\r\n                  class=\"error-message\">\r\n                Name is required\r\n            </div>\r\n            <div  [hidden]='!userNameExist' class=\"error-message\">\r\n                Name is already exist\r\n            </div>\r\n            <input  type=\"password\"\r\n                    class=\"form-control\" \r\n                    placeholder=\"Password\" \r\n                    minlength=\"6\"\r\n                    name = 'userPassword'\r\n                    #userPassword = 'ngModel'\r\n                    [(ngModel)] = 'model.userPassword' \r\n                    required>\r\n            <div [hidden]='userPassword.valid || userPassword.pristine' class=\"error-message\">\r\n              Password is required\r\n            </div>\r\n            <input  type=\"password\"\r\n                    class=\"form-control\" \r\n                    placeholder=\"Confirm password\" \r\n                    minlength=\"6\"\r\n                    (keyup)='checkPasswordsMatch()'\r\n                    name = 'confirmPassword'\r\n                    #confirmPassword = 'ngModel'\r\n                    [(ngModel)] = 'model.confirmPassword' \r\n                    required>\r\n            <div [hidden] = 'confirmPasswordValid' class=\"error-message error-message-confirm-password\">\r\n                Passwords do not match\r\n            </div>\r\n            <button class=\"btn btn-lg btn-primary btn-block button-submit\"\r\n                    [disabled]='signupForm.form.invalid || !confirmPasswordValid || userNameExist' \r\n                    type=\"submit\">\r\n              Sign up\r\n            </button>\r\n            </form>\r\n        </div>  \r\n      </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -1087,7 +1087,7 @@ var SignupComponent = (function () {
         var user = { user_id: id,
             name: this.model.userName,
             password: this.model.userPassword,
-            user_friends: ""
+            user_friends: ''
         };
         this.apiService.createUser(user).subscribe(function (userDb) {
             if (userDb.length > 0) {

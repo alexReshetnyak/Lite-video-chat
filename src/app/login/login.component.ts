@@ -1,39 +1,38 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoginForm } from '../models/forms.models';
-import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../services/api.service';
 import { PeerService } from '../services/peer.service';
-import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
-  
-  @ViewChild('loginForm') loginForm: NgForm;
-  windowHeight: string;
-  model:LoginForm;
-  wrongNameOrPassword: boolean = false;
+
+  @ViewChild('loginForm') public loginForm: NgForm;
+  public windowHeight: string;
+  public model: LoginForm;
+  public wrongNameOrPassword: boolean = false;
 
   constructor( public apiService: ApiService,
                public peerService: PeerService,
                public router: Router
-              ){}
+              ) {}
 
-  ngOnInit(){
+  public ngOnInit(): void {
     this.model = new LoginForm('', '');
     this.windowHeight = `${window.innerHeight}px`;
   }
 
-  loggingIn(){
+  public loggingIn(): void {
     this.chekNameAndPassordMatch();
   }
-  
-  chekNameAndPassordMatch(){
+
+  public chekNameAndPassordMatch(): void {
     this.apiService.login(this.model.userName, this.model.userPassword)
       .subscribe((user:any) => {
         if(user.length > 0){
