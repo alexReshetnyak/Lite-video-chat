@@ -23,7 +23,10 @@ export class PeerService {
   }
 
   public getUserId(): any {
-    this.peer = new Peer(this.peerKey);
+    // uncomment it if you want to use peer server
+    // this.peer = new Peer(this.peerKey);
+
+    this.peer = new Peer({　host: 'server-peerjs.herokuapp.com', secure: true, port: 443, key: 'peerjs', debug: 3});
     return this.peer;
   }
 
@@ -32,7 +35,11 @@ export class PeerService {
       return this.peer;
     } else {
       const user = this.userService.getCurrentUser();
-      this.peer = new Peer(user.user_id, this.peerKey);
+
+      // uncomment it if you want to use peer server
+      // this.peer = new Peer(user.user_id, this.peerKey);
+
+      this.peer = new Peer(user.user_id, {host: 'server-peerjs.herokuapp.com', secure: true, port: 443, key: 'peerjs', debug: 3});
       return this.peer;
     }
   }
