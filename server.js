@@ -35,6 +35,4 @@ mongoose.connection.once('open', function() {
 });
 
 // start server
-app.listen(appConfig.port, function() {
-    console.log('Express server listening on port 3000');
-});
+app.listen(process.env.PORT || 8080);
