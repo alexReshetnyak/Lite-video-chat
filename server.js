@@ -6,7 +6,6 @@ bodyParser      = require('body-parser'),
 appConfig       = require("./server/config"),
 router          = require("./server/routes/router"),
 app             = express();
-
 //middlewares
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(bodyParser.urlencoded({extended: true}));
